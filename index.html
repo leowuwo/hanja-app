@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>신나는 한자 놀이터 (8급~3급 · 사자성어 1000선)</title>
+  <title>신나는 한자 놀이터 (8급~특급 · 사자성어 1000선)</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Serif+KR:wght@600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
     * { box-sizing: border-box; font-family: 'Jua', 'Noto Sans KR', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -91,11 +91,13 @@
 </head>
 <body>
   <header>
-    <div>🀄 신나는 한자 놀이터 (8급~3급 · 사자성어 1,000선)</div>
+    <div>🀄 신나는 한자 놀이터 (8급~특급 · 사자성어 1,000선)</div>
     <div class="header-right">
       <select id="voiceProfileSelect" class="voice-select" onchange="changeVoiceProfile()" aria-label="목소리 선택">
+        <option value="girl">👧 여자아이</option>
         <option value="woman">👩 여자 어른</option>
-     
+        <option value="boy">👦 남자아이</option>
+        <option value="man">👨 남자 어른</option>
       </select>
       <div class="star-badge">⭐ 별: <span id="starCount">0</span>개</div>
     </div>
@@ -114,7 +116,7 @@
     <!-- 1. 급수별 한자 -->
     <section id="tab1" class="section active">
       <div id="hanjaListView" style="display:flex; flex-direction:column;">
-        <h2>🀄 8급~3급 급수별 배정한자 현황 및 학습</h2>
+        <h2>🀄 8급~특급 급수별 배정한자 현황 및 학습</h2>
 
         <div class="top-category-bar">
           <div class="cat-tabs" id="gradeTabs">
@@ -130,6 +132,10 @@
             <button type="button" class="cat-btn" onclick="filterGrade('4급', this)">4급</button>
             <button type="button" class="cat-btn" onclick="filterGrade('3급Ⅱ', this)">3급Ⅱ</button>
             <button type="button" class="cat-btn" onclick="filterGrade('3급', this)">3급</button>
+            <button type="button" class="cat-btn" onclick="filterGrade('2급', this)">2급</button>
+            <button type="button" class="cat-btn" onclick="filterGrade('1급', this)">1급</button>
+            <button type="button" class="cat-btn" onclick="filterGrade('준특급', this)">준특급</button>
+            <button type="button" class="cat-btn" onclick="filterGrade('특급', this)">특급</button>
           </div>
           <input type="text" id="hanjaSearch" placeholder="한자·훈·음 검색" oninput="hanjaPage=1; renderHanjaGrid();" style="padding:6px 10px; width:145px; border-radius:12px; border:2px solid #CCC; font-size:0.9rem;">
         </div>
@@ -258,8 +264,12 @@
       { code: "5급",   readCum: 500,  add: 100, writeCum: "300자 (6급 읽기)",   note: "민간자격" },
       { code: "4급Ⅱ",  readCum: 750,  add: 250, writeCum: "400자 (5급Ⅱ 읽기)", note: "민간자격" },
       { code: "4급",   readCum: 1000, add: 250, writeCum: "500자 (5급 읽기)",   note: "민간자격" },
-      { code: "3급Ⅱ",  readCum: 1500, add: 500, writeCum: "750자 (4급Ⅱ 읽기)", note: "국가공인 시작" },
-      { code: "3급",   readCum: 1817, add: 317, writeCum: "1,000자 (4급 읽기)", note: "국가공인" }
+      { code: "3급Ⅱ",  readCum: 1500, add: 500,  writeCum: "750자 (4급Ⅱ 읽기)", note: "국가공인 시작" },
+      { code: "3급",   readCum: 1817, add: 317,  writeCum: "1,000자 (4급 읽기)", note: "국가공인" },
+      { code: "2급",   readCum: 2355, add: 538,  writeCum: "누적 2,355자 기준", note: "2급 배정" },
+      { code: "1급",   readCum: 3500, add: 1145, writeCum: "누적 3,500자 기준", note: "1급 배정" },
+      { code: "준특급", readCum: 4650, add: 1150, writeCum: "누적 4,650자 기준", note: "특급Ⅱ" },
+      { code: "특급",  readCum: 5978, add: 1328, writeCum: "누적 5,978자 기준", note: "특급" }
     ];
 
     // [한자, 훈음, 급수, 획수, 활용어]
@@ -346,7 +356,17 @@
       ["義", "옳을 의", "4급", 13, "정의, 의리"],
       ["禮", "예의 례", "4급", 18, "예절, 예의"],
       ["智", "지혜 지", "3급", 12, "지혜, 이지"],
-      ["德", "큰덕 덕", "3급", 15, "도덕, 덕망"]
+      ["德", "큰덕 덕", "3급", 15, "도덕, 덕망"],
+
+      // 2급·1급·준특급·특급 샘플
+      ["耀", "빛날 요", "2급", 20, "영요, 조요"],
+      ["譜", "계보 보", "2급", 19, "족보, 악보"],
+      ["巖", "바위 암", "1급", 23, "기암괴석, 암벽"],
+      ["璽", "도장 새", "1급", 19, "국새, 어새"],
+      ["鸞", "난새 란", "준특급", 27, "난봉, 난새"],
+      ["黽", "맹꽁이 맹", "준특급", 20, "면면, 맹맹"],
+      ["麤", "거칠 추", "특급", 33, "추잡, 추악"],
+      ["齉", "코맹맹이소리 농", "특급", 34, "농성, 농음"]
     ];
 
     var baseIdiomDB = [
@@ -591,7 +611,7 @@
       var slice = filtered.slice(start, start + PAGE_SIZE);
 
       document.getElementById('hanjaCountInfo').innerHTML =
-        '현재 표시 한자: ' + total + '자 (' + hanjaPage + ' / ' + totalPages + ' 페이지) — 전체 체계 8급~3급 누적 1,817자 기준';
+        '현재 표시 한자: ' + total + '자 (' + hanjaPage + ' / ' + totalPages + ' 페이지) — 전체 체계 8급~특급 누적 5,978자 기준';
 
       var grid = document.getElementById('hanjaGrid');
       grid.innerHTML = '';
