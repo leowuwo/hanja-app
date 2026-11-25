@@ -86,6 +86,9 @@
     .sticker-board { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; font-size: 2.2rem; background: #FFF5E4; padding: 14px; border-radius: 16px; min-height: 120px; align-content: flex-start; }
 
     .pagination-bar { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+    .action-btn.memorized { background: #FFF4E6; color: #D96500; border: 2px solid #FF922B; box-shadow: 0 3px 0 #E8770E; }
+    .hanja-card.is-memorized { border-color: #FF922B; background: #FFFDF8; }
+    .memo-badge { position: absolute; bottom: 6px; right: 7px; font-size: 0.66rem; background: #FFE8CC; color: #C95B00; padding: 1px 6px; border-radius: 8px; font-weight: bold; }
     .toast-msg { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: rgba(33, 37, 41, 0.9); color: #fff; padding: 8px 16px; border-radius: 14px; font-size: 0.95rem; z-index: 999; display: none; }
   </style>
 </head>
@@ -160,9 +163,10 @@
         <div class="solo-big-char hanja-font" id="soloHanjaChar">國</div>
         <div class="solo-sub" id="soloHanjaHuneum">나라 국</div>
         <div class="solo-detail" id="soloHanjaDetail"></div>
-        <div>
+        <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:6px;">
           <button type="button" class="action-btn blue" id="soloHanjaSpeakBtn">🔊 훈음 듣기</button>
           <button type="button" class="action-btn green" id="soloHanjaWriteBtn">✍️ 따라 쓰기</button>
+          <button type="button" class="action-btn" id="soloHanjaMemoBtn" onclick="toggleMemorizedCurrentHanja()">암기 체크</button>
         </div>
       </div>
     </section>
@@ -462,11 +466,57 @@
             quiz: parsed.quiz || 0,
             stickers: Array.isArray(parsed.stickers) ? parsed.stickers : [],
             learnedChars: Array.isArray(parsed.learnedChars) ? parsed.learnedChars : [],
-            tracedChars: Array.isArray(parsed.tracedChars) ? parsed.tracedChars : []
+            tracedChars: Array.isArray(parsed.tracedChars) ? parsed.tracedChars : [],
+            memorizedChars: Array.isArray(parsed.memorizedChars) ? parsed.memorizedChars : []
           };
         }
       } catch (e) {}
-      return { stars: 0, written: 0, quiz: 0, stickers: [], learnedChars: [], tracedChars: [] };
+      return { stars: 0, written: 0, quiz: 0, stickers: [], learnedChars: [], tracedChars: [], memorizedChars: [] };
+    }
+
+    function isCharMemorized(item) {
+      if (!item || !item[0]) return false;
+      var key = makeCharKey(item);
+      var memo = Array.isArray(progress.memorizedChars) ? progress.memorizedChars : [];
+      return memo.indexOf(key) !== -1 || memo.indexOf(item[0]) !== -1;
+    }
+
+    function updateSoloMemoButtonUI(item) {
+      var btn = document.getElementById('soloHanjaMemoBtn');
+      if (!btn || !item) return;
+      var checked = isCharMemorized(item);
+      if (checked) {
+        btn.classList.add('memorized');
+        btn.innerHTML = '✅ 암기 완료';
+      } else {
+        btn.classList.remove('memorized');
+        btn.innerHTML = '암기 체크';
+      }
+    }
+
+    function toggleMemorizedCurrentHanja() {
+      if (!selectedHanja || !selectedHanja[0]) return;
+      if (!Array.isArray(progress.memorizedChars)) progress.memorizedChars = [];
+      var key = makeCharKey(selectedHanja);
+      var filtered = progress.memorizedChars.filter(function(entry) {
+        return entry !== key && entry !== selectedHanja[0];
+      });
+
+      if (filtered.length < progress.memorizedChars.length) {
+        progress.memorizedChars = filtered;
+        saveProgress();
+        updateSoloMemoButtonUI(selectedHanja);
+        renderHanjaGrid();
+        showToast(selectedHanja[0] + ' 암기 체크를 해제했어요.');
+      } else {
+        progress.memorizedChars.push(key);
+        markCharLearned(selectedHanja);
+        saveProgress();
+        updateSoloMemoButtonUI(selectedHanja);
+        renderHanjaGrid();
+        playChime(true);
+        showToast(selectedHanja[0] + ' (' + selectedHanja[1] + ') 암기 체크 완료!');
+      }
     }
 
     function makeCharKey(item) {
@@ -686,6 +736,7 @@
         '급수: <strong>' + item[2] + '</strong> · 총 ' + item[3] + '획<br>대표 활용어: ' + item[4];
       document.getElementById('soloHanjaSpeakBtn').onclick = function() { speak(item[1]); };
       document.getElementById('soloHanjaWriteBtn').onclick = function() { previousTabId = 'tab1'; sendToWrite(item); };
+      updateSoloMemoButtonUI(item);
       updateSoloNavButtons(item);
       speak(item[1]);
     }
@@ -721,14 +772,16 @@
       }
       for (var j = 0; j < slice.length; j++) {
         (function(item) {
+          var memoDone = isCharMemorized(item);
           var card = document.createElement('div');
-          card.className = 'hanja-card';
+          card.className = 'hanja-card' + (memoDone ? ' is-memorized' : '');
           card.innerHTML =
             '<span class="grade-tag">' + item[2] + '</span>' +
-            '<span class="write-tag">학습</span>' +
+            '<span class="write-tag">' + (memoDone ? '암기완료' : '학습') + '</span>' +
             '<div class="hanja-char hanja-font">' + item[0] + '</div>' +
             '<div class="hanja-huneum">' + item[1] + '</div>' +
-            '<div class="hanja-meta">' + item[3] + '획</div>';
+            '<div class="hanja-meta">' + item[3] + '획</div>' +
+            (memoDone ? '<span class="memo-badge">✓ 암기</span>' : '');
           card.onclick = function() { openHanjaSolo(item); };
           grid.appendChild(card);
         })(slice[j]);
@@ -1216,10 +1269,12 @@
     }
 
     function resetProgress() {
-      if (!confirm('지금까지 모은 별과 스티커, 익힌 글자 기록을 초기화할까요?')) return;
-      progress = { stars: 0, written: 0, quiz: 0, stickers: [], learnedChars: [], tracedChars: [] };
+      if (!confirm('지금까지 모은 별과 스티커, 암기·익힌 글자 기록을 초기화할까요?')) return;
+      progress = { stars: 0, written: 0, quiz: 0, stickers: [], learnedChars: [], tracedChars: [], memorizedChars: [] };
       saveProgress();
       updateStatsUI();
+      renderHanjaGrid();
+      if (selectedHanja) updateSoloMemoButtonUI(selectedHanja);
       nextQuiz();
       showToast('기록이 초기화되었어요.');
     }
@@ -1275,7 +1330,7 @@ window.addEventListener('DOMContentLoaded', function() {
       return res.json();
     });
 
-  var idiomMainReq = fetch('./sajaseongeo_1000.json?v=' + Date.now(), { cache: 'no-store' })
+  var idiomMainReq = fetch('./sajaseongeo_1000_3.json?v=' + Date.now(), { cache: 'no-store' })
     .then(function(res) {
       if (!res.ok) throw new Error('사자성어 1000 JSON HTTP ' + res.status);
       return res.json();
