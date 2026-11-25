@@ -1094,23 +1094,31 @@
     }
 
 window.addEventListener('DOMContentLoaded', function() {
-  fetch('./hanja_8_to_3.json?v=' + Date.now(), { cache: 'no-store' })
+  var hanjaReq = fetch('./hanja_8_to_3.json?v=' + Date.now(), { cache: 'no-store' })
     .then(function(res) {
-      if (!res.ok) {
-        throw new Error('HTTP ' + res.status + ' (' + res.statusText + ')');
-      }
+      if (!res.ok) throw new Error('한자 JSON HTTP ' + res.status);
       return res.json();
-    })
-    .then(function(data) {
-      if (Array.isArray(data) && data.length > 0) {
-        hanjaDB = data;
+    });
+
+  var idiomReq = fetch('./idiom_1000.json?v=' + Date.now(), { cache: 'no-store' })
+    .then(function(res) {
+      if (!res.ok) throw new Error('사자성어 JSON HTTP ' + res.status);
+      return res.json();
+    });
+
+  Promise.allSettled([hanjaReq, idiomReq])
+    .then(function(results) {
+      if (results[0].status === 'fulfilled' && Array.isArray(results[0].value) && results[0].value.length > 0) {
+        hanjaDB = results[0].value;
       } else {
-        throw new Error('JSON 배열이 비어 있거나 형식이 다릅니다.');
+        console.warn('한자 JSON 로드 실패:', results[0].reason);
       }
-    })
-    .catch(function(err) {
-      console.error('JSON 불러오기 실패:', err);
-      showToast('JSON 파일을 불러오지 못해 기본 한자 목록을 표시합니다. (서버 실행 여부 확인)');
+
+      if (results[1].status === 'fulfilled' && Array.isArray(results[1].value) && results[1].value.length > 0) {
+        idiom1000DB = results[1].value;
+      } else {
+        console.warn('사자성어 JSON 로드 실패:', results[1].reason);
+      }
     })
     .finally(function() {
       renderGradeSummaryTable();
