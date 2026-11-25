@@ -49,15 +49,20 @@
     .hanja-meta { font-size: 0.75rem; color: #888; margin-top: 2px; }
 
     .idiom-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 9px; padding-bottom: 8px; }
-    .idiom-card { background: #fff; border-radius: 16px; padding: 10px 12px; text-align: left; box-shadow: 0 3px 8px rgba(0,0,0,0.06); border: 2px solid #A8DADC; cursor: pointer; }
+    .idiom-card { background: #fff; border-radius: 16px; padding: 10px 12px 24px 12px; text-align: left; box-shadow: 0 3px 8px rgba(0,0,0,0.06); border: 2px solid #A8DADC; cursor: pointer; position: relative; transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease; }
+    .idiom-card:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(27,73,101,0.12); border-color: #457B9D; }
+    .idiom-card:active { transform: scale(0.99); }
+    .idiom-card.is-memorized { border-color: #FF922B; background: #FFFDF8; }
     .idiom-word { font-size: 1.45rem; color: #1B4965; margin-bottom: 2px; }
     .idiom-read { font-size: 0.95rem; color: #E06000; margin-bottom: 4px; }
     .idiom-mean { font-size: 0.82rem; color: #555; line-height: 1.35; }
 
     .solo-view { background: #fff; border: 3px solid #FFD166; border-radius: 22px; padding: 16px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.08); flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
     .solo-big-char { font-size: clamp(6.5rem, 22vh, 10rem); line-height: 1.1; color: #222; margin: 6px 0; }
+    .solo-idiom-word { font-size: clamp(3rem, 11vw, 5.8rem); line-height: 1.18; color: #1B4965; margin: 8px 0; word-break: keep-all; max-width: 100%; }
     .solo-sub { font-size: 1.65rem; color: #E06000; margin-bottom: 6px; }
-    .solo-detail { font-size: 1.05rem; color: #555; background: #FFF9EC; border: 1.5px solid #FFE082; padding: 8px 16px; border-radius: 14px; margin-bottom: 14px; }
+    .solo-grade-chip { display: inline-block; font-size: 0.88rem; background: #E6F4F1; color: #1B4965; border: 1.5px solid #A8DADC; padding: 3px 12px; border-radius: 12px; margin-bottom: 8px; }
+    .solo-detail { font-size: 1.05rem; color: #555; background: #FFF9EC; border: 1.5px solid #FFE082; padding: 10px 18px; border-radius: 14px; margin-bottom: 14px; max-width: 720px; width: 100%; line-height: 1.5; word-break: keep-all; }
 
     .rule-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
     .rule-card { background: #fff; border: 2px solid #A8DADC; border-radius: 16px; padding: 12px 14px; box-shadow: 0 3px 8px rgba(0,0,0,0.06); cursor: pointer; }
@@ -97,9 +102,10 @@
     <div>🀄 신나는 한자 놀이터 (8급~특급 · 사자성어 1,000선)</div>
     <div class="header-right">
       <select id="voiceProfileSelect" class="voice-select" onchange="changeVoiceProfile()" aria-label="목소리 선택">
-    
+        <option value="girl">👧 여자 아이</option>
         <option value="woman">👩 여자 어른</option>
-       
+        <option value="boy">👦 남자 아이</option>
+        <option value="man">👨 남자 어른</option>
       </select>
       <div class="star-badge">⭐ 별: <span id="starCount">0</span>개</div>
     </div>
@@ -159,7 +165,13 @@
       </div>
 
       <div id="hanjaSoloView" class="solo-view" style="display:none;">
-        <div class="back-bar" style="width:100%; justify-content:space-between; align-items:center; gap:8px;"><button type="button" class="back-btn" onclick="closeHanjaSolo()">← 목록으로</button><div style="display:flex; gap:8px; align-items:center;"><button type="button" class="back-btn" id="soloPrevBtn" style="background:#3A86FF; box-shadow:0 2px 0 #2667CC;" onclick="prevHanjaSolo()">← 이전</button><button type="button" class="back-btn" id="soloNextBtn" style="background:#FF7A00; box-shadow:0 2px 0 #C85500;" onclick="nextHanjaSolo()">다음 →</button></div></div>
+        <div class="back-bar" style="width:100%; justify-content:space-between; align-items:center; gap:8px;">
+          <button type="button" class="back-btn" onclick="closeHanjaSolo()">← 목록으로</button>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <button type="button" class="back-btn" id="soloPrevBtn" style="background:#3A86FF; box-shadow:0 2px 0 #2667CC;" onclick="prevHanjaSolo()">← 이전</button>
+            <button type="button" class="back-btn" id="soloNextBtn" style="background:#FF7A00; box-shadow:0 2px 0 #C85500;" onclick="nextHanjaSolo()">다음 →</button>
+          </div>
+        </div>
         <div class="solo-big-char hanja-font" id="soloHanjaChar">國</div>
         <div class="solo-sub" id="soloHanjaHuneum">나라 국</div>
         <div class="solo-detail" id="soloHanjaDetail"></div>
@@ -179,18 +191,38 @@
 
     <!-- 3. 1급 대비 사자성어 1,000선 -->
     <section id="tab3" class="section">
-      <h2>📜 한자능력검정시험 1급 대비 사자성어 1,000선</h2>
-      <div class="top-category-bar">
-        <div class="cat-tabs">
-          <button type="button" class="cat-btn active" onclick="filterIdiomType('all', this)">전체</button>
-          <button type="button" class="cat-btn" onclick="filterIdiomType('필수·1급', this)">핵심 고사성어</button>
-          <button type="button" class="cat-btn" onclick="filterIdiomType('1급심화', this)">1급 심화 성어·어휘</button>
+      <div id="idiomListView" style="display:flex; flex-direction:column;">
+        <h2>📜 한자능력검정시험 1급 대비 사자성어 1,000선</h2>
+        <div class="top-category-bar">
+          <div class="cat-tabs">
+            <button type="button" class="cat-btn active" onclick="filterIdiomType('all', this)">전체</button>
+            <button type="button" class="cat-btn" onclick="filterIdiomType('필수·1급', this)">핵심 고사성어</button>
+            <button type="button" class="cat-btn" onclick="filterIdiomType('1급심화', this)">1급 심화 성어·어휘</button>
+          </div>
+          <input type="text" id="idiomSearch" placeholder="성어·독음·뜻 검색" oninput="idiomPage=1; closeIdiomSolo(true); renderIdioms();" style="padding:6px 10px; width:165px; border-radius:12px; border:2px solid #CCC; font-size:0.9rem;">
         </div>
-        <input type="text" id="idiomSearch" placeholder="성어·독음·뜻 검색" oninput="idiomPage=1; renderIdioms();" style="padding:6px 10px; width:165px; border-radius:12px; border:2px solid #CCC; font-size:0.9rem;">
+        <div class="count-info" id="idiomCountInfo"></div>
+        <div class="idiom-grid" id="idiomGrid"></div>
+        <div class="pagination-bar" id="idiomPagination"></div>
       </div>
-      <div class="count-info" id="idiomCountInfo"></div>
-      <div class="idiom-grid" id="idiomGrid"></div>
-      <div class="pagination-bar" id="idiomPagination"></div>
+
+      <div id="idiomSoloView" class="solo-view" style="display:none;">
+        <div class="back-bar" style="width:100%; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="back-btn" onclick="closeIdiomSolo()">← 목록으로</button>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <button type="button" class="back-btn" id="idiomSoloPrevBtn" style="background:#3A86FF; box-shadow:0 2px 0 #2667CC;" onclick="prevIdiomSolo()">← 이전</button>
+            <button type="button" class="back-btn" id="idiomSoloNextBtn" style="background:#FF7A00; box-shadow:0 2px 0 #C85500;" onclick="nextIdiomSolo()">다음 →</button>
+          </div>
+        </div>
+        <div class="solo-grade-chip" id="soloIdiomGrade">핵심 고사성어</div>
+        <div class="solo-idiom-word hanja-font" id="soloIdiomWord">溫故知新</div>
+        <div class="solo-sub" id="soloIdiomRead">온고지신</div>
+        <div class="solo-detail" id="soloIdiomMean">옛것을 익히고 그것을 미루어 새것을 앎.</div>
+        <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px;">
+          <button type="button" class="action-btn blue" id="soloIdiomSpeakBtn" onclick="speakCurrentIdiom()">🔊 뜻·독음 듣기</button>
+          <button type="button" class="action-btn" id="soloIdiomMemoBtn" onclick="toggleMemorizedCurrentIdiom()">암기 체크</button>
+        </div>
+      </div>
     </section>
 
     <!-- 4. 따라 쓰기 -->
@@ -283,7 +315,8 @@
           <h3 style="margin:0 0 6px;">칭찬 스티커 판</h3>
           <div style="font-size:1.1rem;">
             ✍️ 따라 쓴 한자 수: <strong id="writtenCount">0</strong>자 |
-            🎯 맞힌 퀴즈 수: <strong id="quizScore">0</strong>개
+            🎯 맞힌 퀴즈 수: <strong id="quizScore">0</strong>개 |
+            📜 암기한 사자성어: <strong id="memoIdiomCount">0</strong>개
           </div>
         </div>
         <div class="sticker-board" id="stickerBoard"></div>
@@ -298,17 +331,39 @@
 
   <script>
     var isHandlingPopState = false;
-    var currentNavState = { tabId: 'tab1', soloOpen: false, soloItem: null };
+    var currentNavState = { tabId: 'tab1', soloOpen: false, soloItem: null, idiomSoloOpen: false, idiomSoloItem: null };
+
+    function cloneIdiomItem(it) {
+      if (!it) return null;
+      return {
+        word: it.word || '',
+        read: it.read || '',
+        mean: it.mean || '',
+        grade: it.grade || '필수·1급'
+      };
+    }
+
+    function sameIdiomItem(a, b) {
+      if (!a && !b) return true;
+      if (!a || !b) return false;
+      return (a.word || '') === (b.word || '') && (a.read || '') === (b.read || '');
+    }
 
     function captureCurrentNavState() {
       var activeSec = document.querySelector('.section.active');
       var tabId = (activeSec && activeSec.id) ? activeSec.id : 'tab1';
       var soloEl = document.getElementById('hanjaSoloView');
       var isSolo = (tabId === 'tab1' && soloEl && soloEl.style.display !== 'none' && selectedHanja);
+
+      var idiomSoloEl = document.getElementById('idiomSoloView');
+      var isIdiomSolo = (tabId === 'tab3' && idiomSoloEl && idiomSoloEl.style.display !== 'none' && selectedIdiom);
+
       return {
         tabId: tabId,
         soloOpen: Boolean(isSolo),
-        soloItem: isSolo ? [selectedHanja[0], selectedHanja[1], selectedHanja[2], selectedHanja[3], selectedHanja[4]] : null
+        soloItem: isSolo ? [selectedHanja[0], selectedHanja[1], selectedHanja[2], selectedHanja[3], selectedHanja[4]] : null,
+        idiomSoloOpen: Boolean(isIdiomSolo),
+        idiomSoloItem: isIdiomSolo ? cloneIdiomItem(selectedIdiom) : null
       };
     }
 
@@ -324,7 +379,9 @@
           prev.tabId === snap.tabId &&
           Boolean(prev.soloOpen) === Boolean(snap.soloOpen) &&
           ((!prev.soloItem && !snap.soloItem) ||
-            (prev.soloItem && snap.soloItem && prev.soloItem[0] === snap.soloItem[0] && prev.soloItem[2] === snap.soloItem[2]))
+            (prev.soloItem && snap.soloItem && prev.soloItem[0] === snap.soloItem[0] && prev.soloItem[2] === snap.soloItem[2])) &&
+          Boolean(prev.idiomSoloOpen) === Boolean(snap.idiomSoloOpen) &&
+          sameIdiomItem(prev.idiomSoloItem, snap.idiomSoloItem)
         ) {
           return;
         }
@@ -332,7 +389,9 @@
           __hanjaApp: true,
           tabId: snap.tabId,
           soloOpen: snap.soloOpen,
-          soloItem: snap.soloItem
+          soloItem: snap.soloItem,
+          idiomSoloOpen: snap.idiomSoloOpen,
+          idiomSoloItem: snap.idiomSoloItem
         }, '', window.location.href);
         currentNavState = snap;
       } catch (e) {}
@@ -359,6 +418,19 @@
         } else {
           closeHanjaSolo(true);
         }
+      } else if (targetTab === 'tab3') {
+        if (stateObj.idiomSoloOpen && stateObj.idiomSoloItem) {
+          var matchedIdiom = null;
+          for (var j = 0; j < idiom1000DB.length; j++) {
+            if (sameIdiomItem(idiom1000DB[j], stateObj.idiomSoloItem)) {
+              matchedIdiom = idiom1000DB[j];
+              break;
+            }
+          }
+          openIdiomSolo(matchedIdiom || stateObj.idiomSoloItem, true, false);
+        } else {
+          closeIdiomSolo(true);
+        }
       }
       currentNavState = captureCurrentNavState();
     }
@@ -369,8 +441,7 @@
         if (event.state && event.state.__hanjaApp) {
           applyNavState(event.state);
         } else {
-          // If user came back to initial entry state, return to main tab1 list
-          applyNavState({ tabId: 'tab1', soloOpen: false, soloItem: null });
+          applyNavState({ tabId: 'tab1', soloOpen: false, soloItem: null, idiomSoloOpen: false, idiomSoloItem: null });
         }
       } finally {
         setTimeout(function() { isHandlingPopState = false; }, 0);
@@ -378,7 +449,6 @@
     });
 
     window.addEventListener('keydown', function(event) {
-      // Support Alt+Left on PC browsers as well as standard browser/OS back navigation
       if (event.altKey && event.key === 'ArrowLeft') {
         var activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
         if (activeTag !== 'input' && activeTag !== 'textarea' && activeTag !== 'select') {
@@ -558,11 +628,65 @@
             stickers: Array.isArray(parsed.stickers) ? parsed.stickers : [],
             learnedChars: Array.isArray(parsed.learnedChars) ? parsed.learnedChars : [],
             tracedChars: Array.isArray(parsed.tracedChars) ? parsed.tracedChars : [],
-            memorizedChars: Array.isArray(parsed.memorizedChars) ? parsed.memorizedChars : []
+            memorizedChars: Array.isArray(parsed.memorizedChars) ? parsed.memorizedChars : [],
+            memorizedIdioms: Array.isArray(parsed.memorizedIdioms) ? parsed.memorizedIdioms : []
           };
         }
       } catch (e) {}
-      return { stars: 0, written: 0, quiz: 0, stickers: [], learnedChars: [], tracedChars: [], memorizedChars: [] };
+      return { stars: 0, written: 0, quiz: 0, stickers: [], learnedChars: [], tracedChars: [], memorizedChars: [], memorizedIdioms: [] };
+    }
+
+    function makeIdiomKey(item) {
+      if (!item) return '';
+      return (item.word || '') + '|' + (item.read || '');
+    }
+
+    function isIdiomMemorized(item) {
+      if (!item) return false;
+      var key = makeIdiomKey(item);
+      var memo = Array.isArray(progress.memorizedIdioms) ? progress.memorizedIdioms : [];
+      return memo.some(function(entry) {
+        return entry === key || (item.word && entry === item.word);
+      });
+    }
+
+    function updateSoloIdiomMemoButtonUI(item) {
+      var btn = document.getElementById('soloIdiomMemoBtn');
+      if (!btn || !item) return;
+      var checked = isIdiomMemorized(item);
+      if (checked) {
+        btn.classList.add('memorized');
+        btn.innerHTML = '✅ 암기 완료';
+      } else {
+        btn.classList.remove('memorized');
+        btn.innerHTML = '암기 체크';
+      }
+    }
+
+    function toggleMemorizedCurrentIdiom() {
+      if (!selectedIdiom) return;
+      if (!Array.isArray(progress.memorizedIdioms)) progress.memorizedIdioms = [];
+      var key = makeIdiomKey(selectedIdiom);
+      var filtered = progress.memorizedIdioms.filter(function(entry) {
+        return entry !== key && entry !== selectedIdiom.word;
+      });
+
+      if (filtered.length < progress.memorizedIdioms.length) {
+        progress.memorizedIdioms = filtered;
+        saveProgress();
+        updateSoloIdiomMemoButtonUI(selectedIdiom);
+        updateStatsUI();
+        renderIdioms();
+        showToast((selectedIdiom.read || selectedIdiom.word) + ' 암기 체크를 해제했어요.');
+      } else {
+        progress.memorizedIdioms.push(key);
+        saveProgress();
+        updateSoloIdiomMemoButtonUI(selectedIdiom);
+        updateStatsUI();
+        renderIdioms();
+        playChime(true);
+        showToast((selectedIdiom.word || '') + ' (' + (selectedIdiom.read || '') + ') 암기 체크 완료!');
+      }
     }
 
     function isCharMemorized(item) {
@@ -655,6 +779,7 @@
         traced.indexOf(item[0]) !== -1
       );
     }
+
     function saveProgress() {
       try { window.localStorage.setItem('hanjaAppCustomV2', JSON.stringify(progress)); } catch (e) {}
     }
@@ -932,6 +1057,152 @@
     var currentIdiomGrade = 'all';
     var idiomPage = 1;
     var IDIOM_PAGE_SIZE = 24;
+    var selectedIdiom = null;
+
+    function getFilteredIdiomList() {
+      var q = (document.getElementById('idiomSearch') ? document.getElementById('idiomSearch').value : '').trim().toLowerCase();
+      var filtered = [];
+      for (var i = 0; i < idiom1000DB.length; i++) {
+        var it = idiom1000DB[i];
+        if (currentIdiomGrade !== 'all' && it.grade !== currentIdiomGrade) continue;
+        if (
+          q &&
+          (it.word || '').toLowerCase().indexOf(q) === -1 &&
+          (it.read || '').toLowerCase().indexOf(q) === -1 &&
+          (it.mean || '').toLowerCase().indexOf(q) === -1
+        ) {
+          continue;
+        }
+        filtered.push(it);
+      }
+      return filtered;
+    }
+
+    function findIdiomIndex(list, item) {
+      if (!list || !item) return -1;
+      var idx = list.indexOf(item);
+      if (idx !== -1) return idx;
+      for (var i = 0; i < list.length; i++) {
+        if (sameIdiomItem(list[i], item)) return i;
+      }
+      return -1;
+    }
+
+    function formatIdiomCategoryLabel(grade) {
+      if (grade === '1급심화') return '1급 심화 성어·어휘';
+      if (grade === '필수·1급') return '핵심 고사성어';
+      return grade || '사자성어';
+    }
+
+    function updateIdiomSoloNavButtons(item) {
+      var prevBtn = document.getElementById('idiomSoloPrevBtn');
+      var nextBtn = document.getElementById('idiomSoloNextBtn');
+      var list = getFilteredIdiomList();
+      var idx = findIdiomIndex(list, item);
+
+      if (prevBtn) {
+        if (list.length <= 1) {
+          prevBtn.disabled = true;
+          prevBtn.style.opacity = '0.5';
+          prevBtn.innerHTML = '← 이전';
+        } else {
+          prevBtn.disabled = false;
+          prevBtn.style.opacity = '1';
+          var prevIdx = (idx >= 0 ? (idx - 1 + list.length) % list.length : list.length - 1);
+          var prevRead = list[prevIdx].read || list[prevIdx].word || '';
+          prevBtn.innerHTML = '← 이전 (' + prevRead + ')';
+        }
+      }
+
+      if (nextBtn) {
+        if (list.length <= 1) {
+          nextBtn.disabled = true;
+          nextBtn.style.opacity = '0.5';
+          nextBtn.innerHTML = '다음 →';
+        } else {
+          nextBtn.disabled = false;
+          nextBtn.style.opacity = '1';
+          var nextIdx = (idx >= 0 ? (idx + 1) % list.length : 0);
+          var nextRead = list[nextIdx].read || list[nextIdx].word || '';
+          nextBtn.innerHTML = '다음 (' + nextRead + ') →';
+        }
+      }
+    }
+
+    function speakCurrentIdiom() {
+      if (!selectedIdiom) return;
+      speak((selectedIdiom.read || selectedIdiom.word || '') + '. ' + (selectedIdiom.mean || ''));
+    }
+
+    function openIdiomSolo(item, skipHistoryPush, shouldSpeak) {
+      if (!item) return;
+      selectedIdiom = item;
+      var listView = document.getElementById('idiomListView');
+      var soloView = document.getElementById('idiomSoloView');
+      if (listView) listView.style.display = 'none';
+      if (soloView) soloView.style.display = 'flex';
+
+      var wordText = item.word || '';
+      var wordEl = document.getElementById('soloIdiomWord');
+      if (wordEl) {
+        wordEl.innerHTML = wordText;
+        var len = wordText.trim().length;
+        if (len >= 7) {
+          wordEl.style.fontSize = 'clamp(2.2rem, 7.5vw, 4rem)';
+        } else if (len >= 5) {
+          wordEl.style.fontSize = 'clamp(2.6rem, 9vw, 4.8rem)';
+        } else {
+          wordEl.style.fontSize = 'clamp(3.2rem, 11vw, 5.8rem)';
+        }
+      }
+
+      var gradeEl = document.getElementById('soloIdiomGrade');
+      if (gradeEl) {
+        var list = getFilteredIdiomList();
+        var idx = findIdiomIndex(list, item);
+        var posLabel = idx >= 0 ? (' · ' + (idx + 1) + ' / ' + list.length) : '';
+        gradeEl.innerHTML = formatIdiomCategoryLabel(item.grade) + posLabel;
+      }
+
+      var readEl = document.getElementById('soloIdiomRead');
+      if (readEl) readEl.innerHTML = item.read || '';
+
+      var meanEl = document.getElementById('soloIdiomMean');
+      if (meanEl) meanEl.innerHTML = item.mean || '';
+
+      updateSoloIdiomMemoButtonUI(item);
+      updateIdiomSoloNavButtons(item);
+
+      if (!skipHistoryPush) pushAppHistoryState();
+      if (shouldSpeak !== false) {
+        speak((item.read || item.word || '') + '. ' + (item.mean || ''));
+      }
+    }
+
+    function closeIdiomSolo(skipHistoryPush) {
+      selectedIdiom = null;
+      var soloView = document.getElementById('idiomSoloView');
+      var listView = document.getElementById('idiomListView');
+      if (soloView) soloView.style.display = 'none';
+      if (listView) listView.style.display = 'flex';
+      if (!skipHistoryPush) pushAppHistoryState();
+    }
+
+    function prevIdiomSolo() {
+      var list = getFilteredIdiomList();
+      if (!list || list.length === 0) return;
+      var idx = findIdiomIndex(list, selectedIdiom);
+      var prevIdx = (idx >= 0 ? (idx - 1 + list.length) % list.length : list.length - 1);
+      openIdiomSolo(list[prevIdx], false, true);
+    }
+
+    function nextIdiomSolo() {
+      var list = getFilteredIdiomList();
+      if (!list || list.length === 0) return;
+      var idx = findIdiomIndex(list, selectedIdiom);
+      var nextIdx = (idx >= 0 ? (idx + 1) % list.length : 0);
+      openIdiomSolo(list[nextIdx], false, true);
+    }
 
     function filterIdiomType(type, btn) {
       currentIdiomGrade = type;
@@ -939,18 +1210,13 @@
       var btns = document.querySelectorAll('#tab3 .cat-btn');
       for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
       if (btn) btn.classList.add('active');
+      closeIdiomSolo(true);
       renderIdioms();
+      pushAppHistoryState();
     }
 
     function renderIdioms() {
-      var q = (document.getElementById('idiomSearch').value || '').trim().toLowerCase();
-      var filtered = [];
-      for (var i = 0; i < idiom1000DB.length; i++) {
-        var it = idiom1000DB[i];
-        if (currentIdiomGrade !== 'all' && it.grade !== currentIdiomGrade) continue;
-        if (q && it.word.toLowerCase().indexOf(q) === -1 && it.read.toLowerCase().indexOf(q) === -1 && it.mean.toLowerCase().indexOf(q) === -1) continue;
-        filtered.push(it);
-      }
+      var filtered = getFilteredIdiomList();
 
       var total = filtered.length;
       var totalPages = Math.max(1, Math.ceil(total / IDIOM_PAGE_SIZE));
@@ -959,19 +1225,32 @@
       var slice = filtered.slice(start, start + IDIOM_PAGE_SIZE);
 
       document.getElementById('idiomCountInfo').innerHTML =
-        '현재 등록 사자성어 ' + total + '개 표시 중 (' + idiomPage + ' / ' + totalPages + ' 페이지)';
+        '현재 등록 사자성어 ' + total + '개 표시 중 (' + idiomPage + ' / ' + totalPages + ' 페이지) — 카드를 누르면 크게 볼 수 있어요!';
 
       var grid = document.getElementById('idiomGrid');
       grid.innerHTML = '';
+      if (slice.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:24px; color:#777; background:#fff; border-radius:14px;">검색 조건에 맞는 사자성어가 없어요. 다른 검색어나 탭을 눌러보세요!</div>';
+      }
       for (var j = 0; j < slice.length; j++) {
         (function(it) {
+          var memoDone = isIdiomMemorized(it);
           var card = document.createElement('div');
-          card.className = 'idiom-card';
+          card.className = 'idiom-card' + (memoDone ? ' is-memorized' : '');
+          card.setAttribute('role', 'button');
+          card.setAttribute('tabindex', '0');
           card.innerHTML =
-            '<div class="idiom-word hanja-font">' + it.word + '</div>' +
-            '<div class="idiom-read">' + it.read + '</div>' +
-            '<div class="idiom-mean">' + it.mean + '</div>';
-          card.onclick = function() { speak(it.read + '. ' + it.mean); };
+            '<div class="idiom-word hanja-font">' + (it.word || '') + '</div>' +
+            '<div class="idiom-read">' + (it.read || '') + '</div>' +
+            '<div class="idiom-mean">' + (it.mean || '') + '</div>' +
+            (memoDone ? '<span class="memo-badge">✓ 암기</span>' : '');
+          card.onclick = function() { openIdiomSolo(it, false, true); };
+          card.onkeydown = function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openIdiomSolo(it, false, true);
+            }
+          };
           grid.appendChild(card);
         })(slice[j]);
       }
@@ -1285,10 +1564,8 @@
       if (typeof val !== 'string') return false;
       var s = val.trim();
       if (!s) return false;
-      // Exclude grade-index entries like "급수한자 특급-1210" or "한자 亶"
       if (s.indexOf('급수한자') !== -1 || s.indexOf('배정한자') !== -1) return false;
       if (/^한자\s*[\u3400-\u9FFF\uF900-\uFAFF]/.test(s)) return false;
-      // Must contain Hangul characters and no CJK ideographs
       var hasHangul = /[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(s);
       var hasHanja = /[\u3400-\u9FFF\uF900-\uFAFF]/.test(s);
       return hasHangul && !hasHanja;
@@ -1342,7 +1619,6 @@
       var correctLabel = isValidKoreanMeaningLabel(correct[1]) ? correct[1].trim() : '하늘 천';
       var opts = [correctLabel];
 
-      // Shuffle validMeanings to pick 3 distinct Korean meanings
       var shuffledPool = validMeanings.slice();
       for (var p = shuffledPool.length - 1; p > 0; p--) {
         var rp = Math.floor(Math.random() * (p + 1));
@@ -1416,6 +1692,10 @@
       document.getElementById('starCount').innerHTML = progress.stars || 0;
       document.getElementById('writtenCount').innerHTML = progress.written || 0;
       document.getElementById('quizScore').innerHTML = progress.quiz || 0;
+      var memoIdiomEl = document.getElementById('memoIdiomCount');
+      if (memoIdiomEl) {
+        memoIdiomEl.innerHTML = Array.isArray(progress.memorizedIdioms) ? progress.memorizedIdioms.length : 0;
+      }
       var board = document.getElementById('stickerBoard');
       var list = progress.stickers || [];
       board.innerHTML = list.length > 0
@@ -1425,11 +1705,13 @@
 
     function resetProgress() {
       if (!confirm('지금까지 모은 별과 스티커, 암기·익힌 글자 기록을 초기화할까요?')) return;
-      progress = { stars: 0, written: 0, quiz: 0, stickers: [], learnedChars: [], tracedChars: [], memorizedChars: [] };
+      progress = { stars: 0, written: 0, quiz: 0, stickers: [], learnedChars: [], tracedChars: [], memorizedChars: [], memorizedIdioms: [] };
       saveProgress();
       updateStatsUI();
       renderHanjaGrid();
+      renderIdioms();
       if (selectedHanja) updateSoloMemoButtonUI(selectedHanja);
+      if (selectedIdiom) updateSoloIdiomMemoButtonUI(selectedIdiom);
       nextQuiz();
       showToast('기록이 초기화되었어요.');
     }
@@ -1438,6 +1720,9 @@
       var activeSec = document.querySelector('.section.active');
       if (!skipPrevTrack && activeSec && activeSec.id && activeSec.id !== 'tab4') {
         previousTabId = activeSec.id;
+      }
+      if (tabId !== 'tab3') {
+        closeIdiomSolo(true);
       }
       var secs = document.querySelectorAll('.section');
       for (var i = 0; i < secs.length; i++) secs[i].classList.remove('active');
@@ -1462,91 +1747,92 @@
       }
     }
 
-function normalizeIdiomList(list, fallbackGrade) {
-  if (!Array.isArray(list)) return [];
-  return list
-    .filter(function(item) {
-      return item && (item.idiom || item.word || item.hanja);
-    })
-    .map(function(item) {
-      return {
-        word: item.hanja || item.word || '',
-        read: item.idiom || item.read || '',
-        mean: item.meaning || item.mean || '',
-        grade: item.grade || fallbackGrade || '필수·1급'
-      };
+    function normalizeIdiomList(list, fallbackGrade) {
+      if (!Array.isArray(list)) return [];
+      return list
+        .filter(function(item) {
+          return item && (item.idiom || item.word || item.hanja);
+        })
+        .map(function(item) {
+          return {
+            word: item.hanja || item.word || '',
+            read: item.idiom || item.read || '',
+            mean: item.meaning || item.mean || '',
+            grade: item.grade || fallbackGrade || '필수·1급'
+          };
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      var hanjaReq = fetch('./hanja_8_to_3.json?v=' + Date.now(), { cache: 'no-store' })
+        .then(function(res) {
+          if (!res.ok) throw new Error('한자 JSON HTTP ' + res.status);
+          return res.json();
+        });
+
+      var idiomMainReq = fetch('./sajaseongeo_1000.json?v=' + Date.now(), { cache: 'no-store' })
+        .then(function(res) {
+          if (!res.ok) throw new Error('사자성어 1000 JSON HTTP ' + res.status);
+          return res.json();
+        });
+
+      var idiomAdvReq = fetch('./sajaseongeo_1급심화.json?v=' + Date.now(), { cache: 'no-store' })
+        .then(function(res) {
+          if (!res.ok) throw new Error('1급심화 JSON HTTP ' + res.status);
+          return res.json();
+        });
+
+      Promise.allSettled([hanjaReq, idiomMainReq, idiomAdvReq])
+        .then(function(results) {
+          if (results[0].status === 'fulfilled' && Array.isArray(results[0].value) && results[0].value.length > 0) {
+            hanjaDB = results[0].value;
+          } else {
+            console.warn('한자 JSON 로드 실패:', results[0].reason);
+          }
+
+          var mergedIdioms = [];
+
+          if (results[1].status === 'fulfilled' && Array.isArray(results[1].value) && results[1].value.length > 0) {
+            mergedIdioms = mergedIdioms.concat(normalizeIdiomList(results[1].value, '필수·1급'));
+          } else {
+            console.warn('사자성어 1000 JSON 로드 실패:', results[1].reason);
+            mergedIdioms = mergedIdioms.concat(baseIdiomDB.filter(function(it) { return it.grade !== '1급심화'; }));
+          }
+
+          if (results[2].status === 'fulfilled' && Array.isArray(results[2].value) && results[2].value.length > 0) {
+            mergedIdioms = mergedIdioms.concat(normalizeIdiomList(results[2].value, '1급심화'));
+          } else {
+            console.warn('1급심화 JSON 로드 실패:', results[2].reason);
+            mergedIdioms = mergedIdioms.concat(baseIdiomDB.filter(function(it) { return it.grade === '1급심화'; }));
+          }
+
+          if (mergedIdioms.length > 0) {
+            idiom1000DB = mergedIdioms;
+          }
+        })
+        .finally(function() {
+          renderGradeSummaryTable();
+          renderHanjaGrid();
+          initStrokeRules();
+          renderIdioms();
+          startSequentialWriteFromGrade('8급', null);
+          nextQuiz();
+          updateStatsUI();
+          try {
+            if (window.history && typeof window.history.replaceState === 'function') {
+              window.history.replaceState({
+                __hanjaApp: true,
+                tabId: 'tab1',
+                soloOpen: false,
+                soloItem: null,
+                idiomSoloOpen: false,
+                idiomSoloItem: null
+              }, '', window.location.href);
+              currentNavState = captureCurrentNavState();
+            }
+          } catch (e) {}
+        });
     });
-}
-
-    
-window.addEventListener('DOMContentLoaded', function() {
-  var hanjaReq = fetch('./hanja_8_to_3.json?v=' + Date.now(), { cache: 'no-store' })
-    .then(function(res) {
-      if (!res.ok) throw new Error('한자 JSON HTTP ' + res.status);
-      return res.json();
-    });
-
-  var idiomMainReq = fetch('./sajaseongeo_1000.json?v=' + Date.now(), { cache: 'no-store' })
-    .then(function(res) {
-      if (!res.ok) throw new Error('사자성어 1000 JSON HTTP ' + res.status);
-      return res.json();
-    });
-
-  var idiomAdvReq = fetch('./sajaseongeo_1급심화.json?v=' + Date.now(), { cache: 'no-store' })
-    .then(function(res) {
-      if (!res.ok) throw new Error('1급심화 JSON HTTP ' + res.status);
-      return res.json();
-    });
-
-  Promise.allSettled([hanjaReq, idiomMainReq, idiomAdvReq])
-    .then(function(results) {
-      if (results[0].status === 'fulfilled' && Array.isArray(results[0].value) && results[0].value.length > 0) {
-        hanjaDB = results[0].value;
-      } else {
-        console.warn('한자 JSON 로드 실패:', results[0].reason);
-      }
-
-      var mergedIdioms = [];
-
-      if (results[1].status === 'fulfilled' && Array.isArray(results[1].value) && results[1].value.length > 0) {
-        mergedIdioms = mergedIdioms.concat(normalizeIdiomList(results[1].value, '필수·1급'));
-      } else {
-        console.warn('사자성어 1000 JSON 로드 실패:', results[1].reason);
-        mergedIdioms = mergedIdioms.concat(baseIdiomDB.filter(function(it) { return it.grade !== '1급심화'; }));
-      }
-
-      if (results[2].status === 'fulfilled' && Array.isArray(results[2].value) && results[2].value.length > 0) {
-        mergedIdioms = mergedIdioms.concat(normalizeIdiomList(results[2].value, '1급심화'));
-      } else {
-        console.warn('1급심화 JSON 로드 실패:', results[2].reason);
-        mergedIdioms = mergedIdioms.concat(baseIdiomDB.filter(function(it) { return it.grade === '1급심화'; }));
-      }
-
-      if (mergedIdioms.length > 0) {
-        idiom1000DB = mergedIdioms;
-      }
-    })
-    .finally(function() {
-      renderGradeSummaryTable();
-      renderHanjaGrid();
-      initStrokeRules();
-      renderIdioms();
-      startSequentialWriteFromGrade('8급', null);
-      nextQuiz();
-      updateStatsUI();
-      try {
-        if (window.history && typeof window.history.replaceState === 'function') {
-          window.history.replaceState({
-            __hanjaApp: true,
-            tabId: 'tab1',
-            soloOpen: false,
-            soloItem: null
-          }, '', window.location.href);
-          currentNavState = captureCurrentNavState();
-        }
-      } catch (e) {}
-    });
-});
   </script>
 </body>
 </html>
