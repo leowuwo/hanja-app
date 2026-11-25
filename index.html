@@ -1100,7 +1100,7 @@ window.addEventListener('DOMContentLoaded', function() {
       return res.json();
     });
 
-  var idiomReq = fetch('./idiom_1000.json?v=' + Date.now(), { cache: 'no-store' })
+  var idiomReq = fetch('./sajaseongeo_1000_2.json?v=' + Date.now(), { cache: 'no-store' })
     .then(function(res) {
       if (!res.ok) throw new Error('사자성어 JSON HTTP ' + res.status);
       return res.json();
@@ -1115,7 +1115,10 @@ window.addEventListener('DOMContentLoaded', function() {
       }
 
       if (results[1].status === 'fulfilled' && Array.isArray(results[1].value) && results[1].value.length > 0) {
-        idiom1000DB = results[1].value;
+        var normalizedIdioms = normalizeIdiomList(results[1].value);
+        if (normalizedIdioms.length > 0) {
+          idiom1000DB = normalizedIdioms;
+        }
       } else {
         console.warn('사자성어 JSON 로드 실패:', results[1].reason);
       }
