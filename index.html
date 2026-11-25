@@ -94,7 +94,6 @@
     <div>🀄 신나는 한자 놀이터 (8급~3급 · 사자성어 1,000선)</div>
     <div class="header-right">
       <select id="voiceProfileSelect" class="voice-select" onchange="changeVoiceProfile()" aria-label="목소리 선택">
-        <option value="girl">👧 여자아이</option>
         <option value="woman">👩 여자 어른</option>
         <option value="boy">👦 남자아이</option>
         <option value="man">👨 남자 어른</option>
@@ -153,7 +152,7 @@
       </div>
 
       <div id="hanjaSoloView" class="solo-view" style="display:none;">
-        <div class="back-bar" style="width:100%;"><button type="button" class="back-btn" onclick="closeHanjaSolo()">← 목록으로</button></div>
+        <div class="back-bar" style="width:100%; justify-content:space-between; align-items:center; gap:8px;"><button type="button" class="back-btn" onclick="closeHanjaSolo()">← 목록으로</button><div style="display:flex; gap:8px; align-items:center;"><button type="button" class="back-btn" id="soloPrevBtn" style="background:#3A86FF; box-shadow:0 2px 0 #2667CC;" onclick="prevHanjaSolo()">← 이전</button><button type="button" class="back-btn" id="soloNextBtn" style="background:#FF7A00; box-shadow:0 2px 0 #C85500;" onclick="nextHanjaSolo()">다음 →</button></div></div>
         <div class="solo-big-char hanja-font" id="soloHanjaChar">國</div>
         <div class="solo-sub" id="soloHanjaHuneum">나라 국</div>
         <div class="solo-detail" id="soloHanjaDetail"></div>
@@ -484,6 +483,79 @@
       renderHanjaGrid();
     }
 
+    function getFilteredHanjaList() {
+      var q = (document.getElementById('hanjaSearch') ? document.getElementById('hanjaSearch').value : '').trim().toLowerCase();
+      var filtered = [];
+      for (var i = 0; i < hanjaDB.length; i++) {
+        var it = hanjaDB[i];
+        if (currentGrade !== 'all' && it[2] !== currentGrade) continue;
+        if (q && it[0].indexOf(q) === -1 && it[1].toLowerCase().indexOf(q) === -1 && it[4].toLowerCase().indexOf(q) === -1) continue;
+        filtered.push(it);
+      }
+      return filtered.length > 0 ? filtered : hanjaDB;
+    }
+
+    function findSoloIndex(list, item) {
+      if (!list || !item) return -1;
+      var idx = list.indexOf(item);
+      if (idx !== -1) return idx;
+      for (var i = 0; i < list.length; i++) {
+        if (list[i][0] === item[0] && list[i][2] === item[2]) {
+          return i;
+        }
+      }
+      return -1;
+    }
+
+    function updateSoloNavButtons(item) {
+      var prevBtn = document.getElementById('soloPrevBtn');
+      var nextBtn = document.getElementById('soloNextBtn');
+      var list = getFilteredHanjaList();
+      var idx = findSoloIndex(list, item);
+
+      if (prevBtn) {
+        if (list.length <= 1) {
+          prevBtn.disabled = true;
+          prevBtn.style.opacity = '0.5';
+          prevBtn.innerHTML = '← 이전';
+        } else {
+          prevBtn.disabled = false;
+          prevBtn.style.opacity = '1';
+          var prevIdx = (idx >= 0 ? (idx - 1 + list.length) % list.length : list.length - 1);
+          prevBtn.innerHTML = '← 이전 (' + list[prevIdx][0] + ')';
+        }
+      }
+
+      if (nextBtn) {
+        if (list.length <= 1) {
+          nextBtn.disabled = true;
+          nextBtn.style.opacity = '0.5';
+          nextBtn.innerHTML = '다음 →';
+        } else {
+          nextBtn.disabled = false;
+          nextBtn.style.opacity = '1';
+          var nextIdx = (idx >= 0 ? (idx + 1) % list.length : 0);
+          nextBtn.innerHTML = '다음 (' + list[nextIdx][0] + ') →';
+        }
+      }
+    }
+
+    function prevHanjaSolo() {
+      var list = getFilteredHanjaList();
+      if (!list || list.length === 0) return;
+      var idx = findSoloIndex(list, selectedHanja);
+      var prevIdx = (idx >= 0 ? (idx - 1 + list.length) % list.length : list.length - 1);
+      openHanjaSolo(list[prevIdx]);
+    }
+
+    function nextHanjaSolo() {
+      var list = getFilteredHanjaList();
+      if (!list || list.length === 0) return;
+      var idx = findSoloIndex(list, selectedHanja);
+      var nextIdx = (idx >= 0 ? (idx + 1) % list.length : 0);
+      openHanjaSolo(list[nextIdx]);
+    }
+
     function openHanjaSolo(item) {
       selectedHanja = item;
       document.getElementById('hanjaListView').style.display = 'none';
@@ -494,6 +566,7 @@
         '급수: <strong>' + item[2] + '</strong> · 총 ' + item[3] + '획<br>대표 활용어: ' + item[4];
       document.getElementById('soloHanjaSpeakBtn').onclick = function() { speak(item[1]); };
       document.getElementById('soloHanjaWriteBtn').onclick = function() { previousTabId = 'tab1'; sendToWrite(item); };
+      updateSoloNavButtons(item);
       speak(item[1]);
     }
 
