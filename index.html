@@ -18,14 +18,15 @@
       font-weight: 700;
     }
 
+    /* 자연스러운 세로 스크롤과 한 화면 반응형 비율을 함께 유지 */
     html, body {
       margin: 0;
       padding: 0;
       background: #FFF9EC;
       color: #333;
-      height: 100dvh;
-      max-height: 100dvh;
-      overflow: hidden;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
     }
@@ -34,12 +35,12 @@
     header {
       background: linear-gradient(135deg, #FF8C42, #FF5E5B);
       color: #fff;
-      padding: 6px 12px;
+      padding: 7px 12px;
       font-size: clamp(0.95rem, 2.2vw, 1.12rem);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       gap: 6px;
       flex-shrink: 0;
     }
@@ -54,8 +55,8 @@
     .header-right {
       display: flex;
       align-items: center;
-      gap: 5px;
-      flex-wrap: nowrap;
+      gap: 6px;
+      flex-wrap: wrap;
       flex-shrink: 0;
     }
 
@@ -63,9 +64,9 @@
       background: rgba(255, 255, 255, 0.96);
       color: #333;
       border: 2px solid #FFE082;
-      padding: 3px 6px;
+      padding: 3px 7px;
       border-radius: 10px;
-      font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+      font-size: clamp(0.76rem, 1.8vw, 0.85rem);
       cursor: pointer;
       outline: none;
     }
@@ -73,9 +74,9 @@
     .star-badge {
       background: #FFD166;
       color: #5A3A00;
-      padding: 3px 8px;
+      padding: 3px 9px;
       border-radius: 14px;
-      font-size: clamp(0.76rem, 1.8vw, 0.88rem);
+      font-size: clamp(0.78rem, 1.8vw, 0.9rem);
       white-space: nowrap;
     }
 
@@ -83,8 +84,8 @@
     nav {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
-      padding: 5px 8px;
+      gap: 5px;
+      padding: 6px 9px;
       background: #FFF1D0;
       flex-shrink: 0;
     }
@@ -100,9 +101,9 @@
     .nav-btn {
       background: #fff;
       border: 2px solid #FFD166;
-      border-radius: 10px;
-      padding: 5px 4px;
-      font-size: clamp(0.76rem, 1.7vw, 0.86rem);
+      border-radius: 11px;
+      padding: 6px 4px;
+      font-size: clamp(0.78rem, 1.7vw, 0.86rem);
       cursor: pointer;
       color: #444;
       white-space: nowrap;
@@ -116,22 +117,20 @@
       border-color: #D96500;
     }
 
-    /* 메인 영역 및 섹션 */
+    /* 메인 영역: 내부 가둠 없이 전체 페이지 흐름으로 아래 급수표까지 접근 가능 */
     main {
       flex: 1;
-      padding: 8px 10px 10px;
+      padding: 10px 10px 24px;
       max-width: 1120px;
       width: 100%;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      min-height: 0;
-      overflow: hidden;
     }
 
     @media (min-width: 640px) {
       main {
-        padding: 10px 14px 12px;
+        padding: 12px 14px 28px;
       }
     }
 
@@ -139,8 +138,6 @@
       display: none;
       flex: 1;
       flex-direction: column;
-      min-height: 0;
-      overflow: hidden;
     }
 
     .section.active {
@@ -150,8 +147,8 @@
     h2 {
       text-align: center;
       color: #E06000;
-      font-size: clamp(1rem, 2.3vw, 1.2rem);
-      margin: 0 0 6px 0;
+      font-size: clamp(1.02rem, 2.3vw, 1.22rem);
+      margin: 0 0 8px 0;
       flex-shrink: 0;
       line-height: 1.25;
     }
@@ -167,9 +164,9 @@
       background: #6C757D;
       color: #fff;
       border: none;
-      padding: 6px 12px;
+      padding: 6px 13px;
       border-radius: 11px;
-      font-size: clamp(0.82rem, 2vw, 0.95rem);
+      font-size: clamp(0.84rem, 2vw, 0.95rem);
       cursor: pointer;
       box-shadow: 0 2px 0 #495057;
     }
@@ -177,9 +174,9 @@
     .top-category-bar {
       background: #FFF2D6;
       border: 2px solid #FFD166;
-      border-radius: 14px;
-      padding: 6px 8px;
-      margin-bottom: 6px;
+      border-radius: 15px;
+      padding: 7px 9px;
+      margin-bottom: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -191,24 +188,17 @@
     .cat-tabs {
       display: flex;
       justify-content: flex-start;
-      gap: 3px;
-      flex-wrap: nowrap;
-      overflow-x: auto;
+      gap: 4px;
+      flex-wrap: wrap;
       max-width: 100%;
-      padding-bottom: 2px;
-      scrollbar-width: none;
-    }
-
-    .cat-tabs::-webkit-scrollbar {
-      display: none;
     }
 
     .cat-btn {
-      padding: 4px 7px;
-      border-radius: 10px;
+      padding: 5px 8px;
+      border-radius: 11px;
       border: none;
       background: #E6E6E6;
-      font-size: clamp(0.74rem, 1.7vw, 0.84rem);
+      font-size: clamp(0.75rem, 1.7vw, 0.84rem);
       cursor: pointer;
       color: #444;
       white-space: nowrap;
@@ -224,34 +214,44 @@
     .count-info {
       text-align: center;
       color: #666;
-      font-size: clamp(0.74rem, 1.7vw, 0.84rem);
-      margin-bottom: 4px;
+      font-size: clamp(0.76rem, 1.7vw, 0.85rem);
+      margin-bottom: 6px;
       flex-shrink: 0;
-      line-height: 1.25;
+      line-height: 1.3;
     }
 
     #hanjaListView, #idiomListView {
       flex: 1;
-      min-height: 0;
-      overflow-y: auto;
-      padding-right: 2px;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    /* 전체 급수별 배정한자 현황 표 */
+    .grade-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 12px;
+      margin-bottom: 8px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     .grade-summary-table {
       width: 100%;
+      min-width: 420px;
       border-collapse: collapse;
-      margin-top: 2px;
-      margin-bottom: 4px;
       background: #fff;
-      border-radius: 10px;
+      border-radius: 12px;
       overflow: hidden;
-      font-size: clamp(0.72rem, 1.6vw, 0.82rem);
+      font-size: clamp(0.74rem, 1.7vw, 0.84rem);
     }
 
     .grade-summary-table th, .grade-summary-table td {
       border: 1px solid #F0D9A7;
-      padding: 4px 5px;
+      padding: 6px 6px;
       text-align: center;
+      word-break: keep-all;
     }
 
     .grade-summary-table th {
@@ -271,9 +271,9 @@
     /* 한자 그리드 및 카드 */
     .hanja-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
-      gap: 7px;
-      padding-bottom: 4px;
+      grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+      gap: 8px;
+      padding-bottom: 6px;
     }
 
     @media (min-width: 640px) {
@@ -285,10 +285,10 @@
 
     .hanja-card {
       background: #fff;
-      border-radius: 14px;
-      padding: 8px 5px;
+      border-radius: 15px;
+      padding: 9px 6px;
       text-align: center;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
+      box-shadow: 0 2px 7px rgba(0, 0, 0, 0.07);
       border: 2px solid #FFE082;
       cursor: pointer;
       display: flex;
@@ -321,14 +321,14 @@
     }
 
     .hanja-char {
-      font-size: clamp(2rem, 5.5vw, 2.7rem);
+      font-size: clamp(2.1rem, 5.5vw, 2.7rem);
       line-height: 1.15;
       color: #222;
       margin-top: 12px;
     }
 
     .hanja-huneum {
-      font-size: clamp(0.8rem, 2vw, 0.92rem);
+      font-size: clamp(0.82rem, 2vw, 0.92rem);
       color: #E06000;
       margin-top: 3px;
       word-break: keep-all;
@@ -337,30 +337,30 @@
     .hanja-meta {
       font-size: 0.72rem;
       color: #888;
-      margin-top: 1px;
+      margin-top: 2px;
     }
 
     /* 사자성어 그리드 및 카드 */
     .idiom-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-      gap: 7px;
-      padding-bottom: 4px;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 8px;
+      padding-bottom: 6px;
     }
 
     @media (min-width: 640px) {
       .idiom-grid {
-        grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
         gap: 9px;
       }
     }
 
     .idiom-card {
       background: #fff;
-      border-radius: 14px;
-      padding: 8px 10px 20px 10px;
+      border-radius: 15px;
+      padding: 9px 11px 22px 11px;
       text-align: left;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 2px 7px rgba(0, 0, 0, 0.06);
       border: 2px solid #A8DADC;
       cursor: pointer;
       position: relative;
@@ -383,25 +383,21 @@
     }
 
     .idiom-word {
-      font-size: clamp(1.15rem, 3.2vw, 1.45rem);
+      font-size: clamp(1.2rem, 3.2vw, 1.45rem);
       color: #1B4965;
       margin-bottom: 2px;
     }
 
     .idiom-read {
-      font-size: clamp(0.82rem, 2.2vw, 0.95rem);
+      font-size: clamp(0.85rem, 2.2vw, 0.95rem);
       color: #E06000;
       margin-bottom: 3px;
     }
 
     .idiom-mean {
-      font-size: clamp(0.75rem, 1.9vw, 0.82rem);
+      font-size: clamp(0.76rem, 1.9vw, 0.82rem);
       color: #555;
-      line-height: 1.3;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      line-height: 1.35;
     }
 
     /* 한자 / 사자성어 크게 보기 화면 */
@@ -409,20 +405,20 @@
       background: #fff;
       border: 3px solid #FFD166;
       border-radius: 20px;
-      padding: 10px 12px;
+      padding: 12px 14px;
       text-align: center;
       box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08);
       flex: 1;
-      min-height: 0;
-      overflow-y: auto;
+      min-height: calc(100dvh - 115px);
       display: flex;
       flex-direction: column;
       justify-content: space-evenly;
       align-items: center;
+      position: relative;
     }
 
     .solo-big-char {
-      font-size: clamp(3.8rem, 17dvh, 9rem);
+      font-size: clamp(4rem, 17dvh, 9rem);
       line-height: 1.05;
       color: #222;
       margin: 2px 0;
@@ -446,7 +442,7 @@
 
     .solo-grade-chip {
       display: inline-block;
-      font-size: clamp(0.75rem, 2dvh, 0.88rem);
+      font-size: clamp(0.76rem, 2dvh, 0.88rem);
       background: #E6F4F1;
       color: #1B4965;
       border: 1.5px solid #A8DADC;
@@ -456,16 +452,16 @@
     }
 
     .solo-detail {
-      font-size: clamp(0.84rem, 2.3dvh, 1.05rem);
+      font-size: clamp(0.86rem, 2.3dvh, 1.05rem);
       color: #555;
       background: #FFF9EC;
       border: 1.5px solid #FFE082;
-      padding: 6px 12px;
+      padding: 7px 12px;
       border-radius: 12px;
       margin-bottom: 8px;
       max-width: 720px;
       width: 100%;
-      line-height: 1.35;
+      line-height: 1.38;
       word-break: keep-all;
     }
 
@@ -475,7 +471,24 @@
       align-items: center;
       gap: 6px;
       width: 100%;
+      max-width: 560px;
       flex-shrink: 0;
+    }
+
+    /* '훈음 듣기 / 뜻·독음 듣기' 버튼 바로 위 인라인 안내 배너 */
+    .solo-inline-toast {
+      display: none;
+      width: 100%;
+      max-width: 460px;
+      background: rgba(33, 37, 41, 0.94);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: clamp(0.8rem, 2dvh, 0.92rem);
+      text-align: center;
+      line-height: 1.3;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.16);
+      word-break: keep-all;
     }
 
     .solo-action-row {
@@ -496,45 +509,128 @@
       margin-top: 2px;
     }
 
+    /* 가로 화면 및 짧은 높이 화면 안정화 */
+    @media (orientation: landscape) and (max-height: 620px) {
+      header {
+        padding: 4px 10px;
+      }
+      nav {
+        grid-template-columns: repeat(6, 1fr);
+        padding: 3px 8px;
+        gap: 4px;
+      }
+      .nav-btn {
+        padding: 4px 6px;
+        font-size: 0.78rem;
+      }
+      main {
+        max-width: 100%;
+        padding: 6px 10px 16px;
+      }
+      h2 {
+        font-size: 0.98rem;
+        margin-bottom: 4px;
+      }
+      .top-category-bar {
+        padding: 5px 8px;
+        margin-bottom: 5px;
+      }
+      .solo-view {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        align-items: center;
+        padding: 8px 12px;
+        gap: 6px;
+        align-content: center;
+        min-height: calc(100dvh - 82px);
+      }
+      .solo-view > .back-bar {
+        width: 100%;
+        margin-bottom: 0;
+      }
+      .solo-big-char {
+        font-size: clamp(3.4rem, 24dvh, 5.8rem);
+      }
+      .solo-idiom-word {
+        font-size: clamp(1.9rem, 13dvh, 3.6rem);
+      }
+      .solo-sub {
+        font-size: clamp(1rem, 4.6dvh, 1.35rem);
+      }
+      .solo-detail {
+        width: auto;
+        max-width: 340px;
+        margin-bottom: 0;
+        font-size: 0.84rem;
+      }
+      .solo-action-stack {
+        width: auto;
+        max-width: 380px;
+        gap: 4px;
+      }
+      .quiz-box {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 8px 12px;
+      }
+      .quiz-box > div:first-child {
+        flex: 0 0 auto;
+        min-width: 150px;
+      }
+      .quiz-char-box {
+        font-size: clamp(3rem, 22dvh, 5rem);
+        padding: 6px 16px;
+      }
+      .quiz-options {
+        flex: 1;
+        margin-top: 0;
+        gap: 6px;
+      }
+      .quiz-opt-btn {
+        padding: 8px 6px;
+        font-size: 0.95rem;
+      }
+    }
+
     /* 필순 규칙 카드 */
     .rule-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 8px;
-      flex: 1;
-      min-height: 0;
-      overflow-y: auto;
+      gap: 9px;
       align-content: start;
-      padding-bottom: 4px;
+      padding-bottom: 8px;
     }
 
     .rule-card {
       background: #fff;
       border: 2px solid #A8DADC;
       border-radius: 14px;
-      padding: 10px 12px;
+      padding: 11px 12px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
       cursor: pointer;
     }
 
     .rule-title {
-      font-size: clamp(0.92rem, 2.2vw, 1.05rem);
+      font-size: clamp(0.94rem, 2.2vw, 1.05rem);
       color: #00695C;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
 
     .rule-desc {
-      font-size: clamp(0.8rem, 2vw, 0.9rem);
+      font-size: clamp(0.82rem, 2vw, 0.9rem);
       color: #444;
-      line-height: 1.38;
-      margin-bottom: 5px;
+      line-height: 1.4;
+      margin-bottom: 6px;
     }
 
     .rule-ex {
-      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      font-size: clamp(1.02rem, 2.5vw, 1.25rem);
       color: #FF7A00;
       background: #FFF9EC;
-      padding: 3px 8px;
+      padding: 3px 9px;
       border-radius: 9px;
       display: inline-block;
     }
@@ -543,15 +639,14 @@
     .canvas-container {
       background: #fff;
       border-radius: 18px;
-      padding: 8px 10px;
+      padding: 10px 12px;
       text-align: center;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       flex: 1;
+      min-height: calc(100dvh - 118px);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 0;
-      overflow: hidden;
     }
 
     .write-header-bar {
@@ -560,7 +655,7 @@
       justify-content: center;
       gap: 5px;
       flex-wrap: wrap;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       flex-shrink: 0;
     }
 
@@ -569,16 +664,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 0;
+      min-height: 220px;
       width: 100%;
-      padding: 2px 0;
+      padding: 4px 0;
     }
 
     #writeCanvas {
-      width: min(100%, 420px, 46dvh);
-      height: min(100%, 420px, 46dvh);
-      min-width: 160px;
-      min-height: 160px;
+      width: min(100%, 420px, 48dvh);
+      height: min(100%, 420px, 48dvh);
+      min-width: 190px;
+      min-height: 190px;
       border: 3px solid #6CD4C3;
       border-radius: 18px;
       background: #fff;
@@ -588,7 +683,7 @@
     }
 
     .write-controls {
-      margin-top: 4px;
+      margin-top: 6px;
       flex-shrink: 0;
     }
 
@@ -598,7 +693,7 @@
       color: #fff;
       border: none;
       padding: 7px 14px;
-      font-size: clamp(0.85rem, 2.2dvh, 1rem);
+      font-size: clamp(0.86rem, 2.2dvh, 1rem);
       border-radius: 12px;
       margin: 2px;
       cursor: pointer;
@@ -636,42 +731,41 @@
     .quiz-box {
       background: #fff;
       border-radius: 18px;
-      padding: 10px 12px;
+      padding: 12px 14px;
       text-align: center;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       flex: 1;
+      min-height: calc(100dvh - 185px);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 0;
-      overflow-y: auto;
     }
 
     .quiz-char-box {
-      font-size: clamp(3.2rem, 14dvh, 8rem);
+      font-size: clamp(3.4rem, 14dvh, 8rem);
       line-height: 1.05;
       color: #222;
       background: #FFF9EC;
       border: 3px dashed #FFD166;
       border-radius: 20px;
       padding: 8px 22px;
-      margin: 2px auto;
+      margin: 4px auto;
       display: inline-block;
     }
 
     .quiz-options {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 7px;
-      margin-top: 6px;
+      gap: 8px;
+      margin-top: 8px;
     }
 
     .quiz-opt-btn {
       background: #FFF9EC;
       border: 2.5px solid #FFD166;
       border-radius: 12px;
-      padding: 8px 6px;
-      font-size: clamp(0.92rem, 2.4dvh, 1.2rem);
+      padding: 9px 7px;
+      font-size: clamp(0.94rem, 2.4dvh, 1.2rem);
       cursor: pointer;
       word-break: keep-all;
     }
@@ -680,16 +774,15 @@
     .stats-card {
       background: #fff;
       border-radius: 18px;
-      padding: 12px 14px;
+      padding: 14px;
       text-align: center;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       flex: 1;
+      min-height: calc(100dvh - 155px);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 8px;
-      min-height: 0;
-      overflow-y: auto;
+      gap: 10px;
     }
 
     .sticker-board {
@@ -697,13 +790,12 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 8px;
-      font-size: clamp(1.5rem, 4.5dvh, 2.2rem);
+      font-size: clamp(1.6rem, 4.5dvh, 2.2rem);
       background: #FFF5E4;
-      padding: 10px;
+      padding: 12px;
       border-radius: 14px;
       flex: 1;
-      min-height: 80px;
-      overflow-y: auto;
+      min-height: 110px;
       align-content: flex-start;
     }
 
@@ -712,7 +804,7 @@
       justify-content: center;
       align-items: center;
       gap: 8px;
-      margin-top: 6px;
+      margin-top: 8px;
       flex-wrap: wrap;
       flex-shrink: 0;
     }
@@ -784,7 +876,7 @@
   <main>
     <!-- 1. 급수별 한자 -->
     <section id="tab1" class="section active">
-      <div id="hanjaListView" style="display:flex; flex-direction:column;">
+      <div id="hanjaListView">
         <h2>🀄 8급~특급 급수별 배정한자 현황 및 학습</h2>
 
         <div class="top-category-bar">
@@ -813,7 +905,7 @@
         <div class="hanja-grid" id="hanjaGrid"></div>
         <div class="pagination-bar" id="hanjaPagination"></div>
 
-        <div style="overflow-x:auto; margin-top:8px;">
+        <div class="grade-table-wrap">
           <table class="grade-summary-table" id="gradeSummaryTable">
             <thead>
               <tr>
@@ -833,6 +925,7 @@
         <div class="solo-sub" id="soloHanjaHuneum">나라 국</div>
         <div class="solo-detail" id="soloHanjaDetail"></div>
         <div class="solo-action-stack">
+          <div id="hanjaSoloToast" class="solo-inline-toast" role="status" aria-live="polite"></div>
           <div class="solo-action-row">
             <button type="button" class="action-btn blue" id="soloHanjaSpeakBtn">🔊 훈음 듣기</button>
             <button type="button" class="action-btn green" id="soloHanjaWriteBtn">✍️ 따라 쓰기</button>
@@ -856,7 +949,7 @@
 
     <!-- 3. 1급 대비 사자성어 1,000선 -->
     <section id="tab3" class="section">
-      <div id="idiomListView" style="display:flex; flex-direction:column;">
+      <div id="idiomListView">
         <h2>📜 한자능력검정시험 1급 대비 사자성어 1,000선</h2>
         <div class="top-category-bar">
           <div class="cat-tabs">
@@ -880,6 +973,7 @@
         <div class="solo-sub" id="soloIdiomRead">온고지신</div>
         <div class="solo-detail" id="soloIdiomMean">옛것을 익히고 그것을 미루어 새것을 앎.</div>
         <div class="solo-action-stack">
+          <div id="idiomSoloToast" class="solo-inline-toast" role="status" aria-live="polite"></div>
           <div class="solo-action-row">
             <button type="button" class="action-btn blue" id="soloIdiomSpeakBtn" onclick="speakCurrentIdiom()">🔊 뜻·독음 듣기</button>
           </div>
@@ -972,7 +1066,7 @@
           </div>
         </div>
         <div class="quiz-options" id="quizOptions"></div>
-        <p id="quizFeedback" style="font-size:1rem; margin:4px 0 0; min-height:22px;"></p>
+        <p id="quizFeedback" style="font-size:1rem; margin:6px 0 0; min-height:22px;"></p>
       </div>
     </section>
 
@@ -1136,6 +1230,7 @@
     var voiceProfile = 'woman';
     var previousTabId = 'tab1';
     var toastTimer = null;
+    var soloToastTimer = null;
 
     var gradesMeta = [
       { code: "8급",   readCum: 50,   add: 50,  writeCum: "없음",              note: "민간자격" },
@@ -1276,7 +1371,38 @@
     var idiom1000DB = baseIdiomDB.slice();
     var progress = loadProgress();
 
-    function showToast(msg) {
+    function hideSoloInlineToasts() {
+      var hToast = document.getElementById('hanjaSoloToast');
+      var iToast = document.getElementById('idiomSoloToast');
+      if (hToast) hToast.style.display = 'none';
+      if (iToast) iToast.style.display = 'none';
+    }
+
+    function showToast(msg, targetMode) {
+      var hanjaSoloEl = document.getElementById('hanjaSoloView');
+      var idiomSoloEl = document.getElementById('idiomSoloView');
+      var isHanjaSoloOpen = hanjaSoloEl && hanjaSoloEl.style.display !== 'none';
+      var isIdiomSoloOpen = idiomSoloEl && idiomSoloEl.style.display !== 'none';
+
+      var inlineEl = null;
+      if (targetMode === 'hanja' || (targetMode !== 'idiom' && isHanjaSoloOpen)) {
+        inlineEl = document.getElementById('hanjaSoloToast');
+      } else if (targetMode === 'idiom' || isIdiomSoloOpen) {
+        inlineEl = document.getElementById('idiomSoloToast');
+      }
+
+      if (inlineEl) {
+        var bottomToast = document.getElementById('toastMsg');
+        if (bottomToast) bottomToast.style.display = 'none';
+        inlineEl.innerHTML = msg;
+        inlineEl.style.display = 'block';
+        if (soloToastTimer) clearTimeout(soloToastTimer);
+        soloToastTimer = setTimeout(function() {
+          inlineEl.style.display = 'none';
+        }, 1800);
+        return;
+      }
+
       var el = document.getElementById('toastMsg');
       if (!el) return;
       el.innerHTML = msg;
@@ -1355,7 +1481,7 @@
         updateSoloIdiomMemoButtonUI(selectedIdiom);
         updateStatsUI();
         renderIdioms();
-        showToast((selectedIdiom.read || selectedIdiom.word) + ' 암기 체크를 해제했어요.');
+        showToast((selectedIdiom.read || selectedIdiom.word) + ' 암기 체크를 해제했어요.', 'idiom');
       } else {
         progress.memorizedIdioms.push(key);
         saveProgress();
@@ -1363,7 +1489,7 @@
         updateStatsUI();
         renderIdioms();
         playChime(true);
-        showToast((selectedIdiom.word || '') + ' (' + (selectedIdiom.read || '') + ') 암기 체크 완료!');
+        showToast((selectedIdiom.word || '') + ' (' + (selectedIdiom.read || '') + ') 암기 체크 완료!', 'idiom');
       }
     }
 
@@ -1400,15 +1526,19 @@
         saveProgress();
         updateSoloMemoButtonUI(selectedHanja);
         renderHanjaGrid();
-        showToast(selectedHanja[0] + ' 암기 체크를 해제했어요.');
+        syncQuizCycleWithPool();
+        refreshQuizPoolBadgeIfNeeded();
+        showToast(selectedHanja[0] + ' 암기 체크를 해제했어요.', 'hanja');
       } else {
         progress.memorizedChars.push(key);
         markCharLearned(selectedHanja);
         saveProgress();
         updateSoloMemoButtonUI(selectedHanja);
         renderHanjaGrid();
+        syncQuizCycleWithPool();
+        refreshQuizPoolBadgeIfNeeded();
         playChime(true);
-        showToast(selectedHanja[0] + ' (' + selectedHanja[1] + ') 암기 체크 완료!');
+        showToast(selectedHanja[0] + ' (' + selectedHanja[1] + ') 암기 체크 완료!', 'hanja');
       }
     }
 
@@ -1608,6 +1738,7 @@
 
     function openHanjaSolo(item, skipHistoryPush) {
       if (!item) return;
+      hideSoloInlineToasts();
       selectedHanja = item;
       markCharLearned(item);
       document.getElementById('hanjaListView').style.display = 'none';
@@ -1625,6 +1756,7 @@
     }
 
     function closeHanjaSolo(skipHistoryPush) {
+      hideSoloInlineToasts();
       document.getElementById('hanjaSoloView').style.display = 'none';
       document.getElementById('hanjaListView').style.display = 'flex';
       if (!skipHistoryPush) pushAppHistoryState();
@@ -1805,6 +1937,7 @@
 
     function openIdiomSolo(item, skipHistoryPush, shouldSpeak) {
       if (!item) return;
+      hideSoloInlineToasts();
       selectedIdiom = item;
       var listView = document.getElementById('idiomListView');
       var soloView = document.getElementById('idiomSoloView');
@@ -1849,6 +1982,7 @@
     }
 
     function closeIdiomSolo(skipHistoryPush) {
+      hideSoloInlineToasts();
       selectedIdiom = null;
       var soloView = document.getElementById('idiomSoloView');
       var listView = document.getElementById('idiomListView');
@@ -2155,7 +2289,132 @@
 
     var currentQuizGrade = 'all';
     var currentQuizAnswer = null;
+    var lastQuizAnswerKey = '';
+    var quizCycleQueue = [];
+    var quizCycleGrade = '';
     var quizLocked = false;
+
+    function shuffleFisherYates(arr) {
+      var copy = arr.slice();
+      for (var i = copy.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = copy[i];
+        copy[i] = copy[j];
+        copy[j] = tmp;
+      }
+      return copy;
+    }
+
+    function buildFreshQuizCycle(pool, avoidFirstKey) {
+      var shuffled = shuffleFisherYates(pool);
+      if (shuffled.length > 1 && avoidFirstKey && makeCharKey(shuffled[0]) === avoidFirstKey) {
+        var swapIdx = 1 + Math.floor(Math.random() * (shuffled.length - 1));
+        var temp = shuffled[0];
+        shuffled[0] = shuffled[swapIdx];
+        shuffled[swapIdx] = temp;
+      }
+      return shuffled;
+    }
+
+    function syncQuizCycleWithPool(pool) {
+      var list = Array.isArray(pool) ? pool : getGradeQuizCounts(currentQuizGrade).memoPool;
+      var gradeKey = currentQuizGrade || 'all';
+
+      if (list.length === 0) {
+        quizCycleQueue = [];
+        quizCycleGrade = gradeKey;
+        return [];
+      }
+
+      if (quizCycleGrade !== gradeKey) {
+        quizCycleGrade = gradeKey;
+        quizCycleQueue = buildFreshQuizCycle(list, lastQuizAnswerKey);
+        return quizCycleQueue;
+      }
+
+      var validSet = new Set(list.map(function(item) { return makeCharKey(item); }));
+      var seenInQueue = new Set();
+      var pruned = [];
+
+      for (var i = 0; i < quizCycleQueue.length; i++) {
+        var qItem = quizCycleQueue[i];
+        var qKey = makeCharKey(qItem);
+        if (validSet.has(qKey) && !seenInQueue.has(qKey)) {
+          seenInQueue.add(qKey);
+          pruned.push(qItem);
+        }
+      }
+
+      var missingItems = list.filter(function(item) {
+        return !seenInQueue.has(makeCharKey(item));
+      });
+      if (missingItems.length > 0) {
+        var extraShuffled = shuffleFisherYates(missingItems);
+        pruned = pruned.concat(extraShuffled);
+      }
+
+      if (pruned.length === 0) {
+        pruned = buildFreshQuizCycle(list, lastQuizAnswerKey);
+      } else if (pruned.length > 1 && lastQuizAnswerKey && makeCharKey(pruned[0]) === lastQuizAnswerKey) {
+        var altIdx = -1;
+        for (var k = 1; k < pruned.length; k++) {
+          if (makeCharKey(pruned[k]) !== lastQuizAnswerKey) {
+            altIdx = k;
+            break;
+          }
+        }
+        if (altIdx > 0) {
+          var tmpItem = pruned[0];
+          pruned[0] = pruned[altIdx];
+          pruned[altIdx] = tmpItem;
+        }
+      }
+
+      quizCycleQueue = pruned;
+      return quizCycleQueue;
+    }
+
+    function pickNextFromQuizCycle(pool) {
+      if (!Array.isArray(pool) || pool.length === 0) return null;
+      syncQuizCycleWithPool(pool);
+
+      if (quizCycleQueue.length === 0) {
+        quizCycleQueue = buildFreshQuizCycle(pool, lastQuizAnswerKey);
+      }
+
+      var picked = quizCycleQueue.shift();
+      var pickedKey = makeCharKey(picked);
+
+      if (pool.length > 1 && pickedKey === lastQuizAnswerKey) {
+        var swapFound = false;
+        for (var i = 0; i < quizCycleQueue.length; i++) {
+          if (makeCharKey(quizCycleQueue[i]) !== lastQuizAnswerKey) {
+            var alt = quizCycleQueue.splice(i, 1)[0];
+            quizCycleQueue.unshift(picked);
+            picked = alt;
+            pickedKey = makeCharKey(picked);
+            swapFound = true;
+            break;
+          }
+        }
+        if (!swapFound) {
+          var fresh = buildFreshQuizCycle(pool, lastQuizAnswerKey);
+          if (fresh.length > 0) {
+            picked = fresh.shift();
+            pickedKey = makeCharKey(picked);
+            quizCycleQueue = fresh;
+          }
+        }
+      }
+
+      lastQuizAnswerKey = pickedKey;
+
+      if (quizCycleQueue.length === 0) {
+        quizCycleQueue = buildFreshQuizCycle(pool, lastQuizAnswerKey);
+      }
+
+      return picked;
+    }
 
     function matchesCharEntry(item, entry) {
       if (!item || !item[0] || !entry) return false;
@@ -2212,6 +2471,9 @@
 
     function filterQuizGrade(grade, btn) {
       currentQuizGrade = grade || 'all';
+      quizCycleGrade = '';
+      quizCycleQueue = [];
+      lastQuizAnswerKey = '';
       var btns = document.querySelectorAll('#quizGradeTabs .cat-btn');
       for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
       if (btn) btn.classList.add('active');
@@ -2261,6 +2523,8 @@
 
       if (pool.length === 0) {
         currentQuizAnswer = null;
+        quizCycleQueue = [];
+        lastQuizAnswerKey = '';
         var label = currentQuizGrade === 'all' ? '아직' : (currentQuizGrade + '에서 아직');
         document.getElementById('quizGradeBadge').innerHTML = label + ' 암기 체크한 글자가 없어요';
         document.getElementById('quizHanjaChar').innerHTML = '?';
@@ -2277,9 +2541,13 @@
       if (hintBtn) hintBtn.style.display = 'inline-block';
       if (learnBtn) learnBtn.style.display = 'none';
 
-      var correct = pool[Math.floor(Math.random() * pool.length)];
+      var correct = pickNextFromQuizCycle(pool);
       currentQuizAnswer = correct;
-      document.getElementById('quizGradeBadge').innerHTML = (correct[2] || '') + ' 배정한자 (암기 체크한 글자)';
+      var remainInCycle = quizCycleQueue.length;
+      var cycleOrderText = pool.length > 1
+        ? (' · 순환 남은 글자: ' + remainInCycle + '/' + pool.length)
+        : '';
+      document.getElementById('quizGradeBadge').innerHTML = (correct[2] || '') + ' 배정한자 (암기 체크 ' + pool.length + '자 순환' + cycleOrderText + ')';
       document.getElementById('quizHanjaChar').innerHTML = correct[0];
 
       var validMeanings = [];
@@ -2295,11 +2563,7 @@
       var correctLabel = isValidKoreanMeaningLabel(correct[1]) ? correct[1].trim() : '하늘 천';
       var opts = [correctLabel];
 
-      var shuffledPool = validMeanings.slice();
-      for (var p = shuffledPool.length - 1; p > 0; p--) {
-        var rp = Math.floor(Math.random() * (p + 1));
-        var tmpP = shuffledPool[p]; shuffledPool[p] = shuffledPool[rp]; shuffledPool[rp] = tmpP;
-      }
+      var shuffledPool = shuffleFisherYates(validMeanings);
       for (var qIdx = 0; qIdx < shuffledPool.length && opts.length < 4; qIdx++) {
         if (opts.indexOf(shuffledPool[qIdx]) === -1) {
           opts.push(shuffledPool[qIdx]);
@@ -2313,10 +2577,7 @@
         dIdx++;
       }
 
-      for (var s = opts.length - 1; s > 0; s--) {
-        var r = Math.floor(Math.random() * (s + 1));
-        var tmp = opts[s]; opts[s] = opts[r]; opts[r] = tmp;
-      }
+      opts = shuffleFisherYates(opts);
 
       if (box) {
         box.innerHTML = '';
@@ -2402,6 +2663,8 @@
         memorizedChars: [],
         memorizedIdioms: []
       };
+      quizCycleQueue = [];
+      lastQuizAnswerKey = '';
       saveProgress();
       updateStatsUI();
       renderHanjaGrid();
@@ -2428,6 +2691,8 @@
       var navBtns = document.querySelectorAll('#mainNav .nav-btn');
       for (var j = 0; j < navBtns.length; j++) navBtns[j].classList.remove('active');
       if (btn) btn.classList.add('active');
+
+      window.scrollTo({ top: 0, behavior: 'auto' });
 
       if (tabId === 'tab4') drawGuideHanja(currentWriteItem);
       if (tabId === 'tab5') nextQuiz();
