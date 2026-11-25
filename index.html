@@ -258,7 +258,7 @@
           <button type="button" class="cat-btn" onclick="filterQuizGrade('준특급', this)">준특급</button>
           <button type="button" class="cat-btn" onclick="filterQuizGrade('특급', this)">특급</button>
         </div>
-        <div id="quizPoolCount" style="font-size:0.88rem; color:#5A3A00; font-weight:bold;">전체 급수 익힌/따라 쓴 글자: 0자</div>
+        <div id="quizPoolCount" style="font-size:0.88rem; color:#5A3A00; font-weight:bold;">전체 급수 익힌 글자: 0자 · 따라 쓴 글자: 0자 (암기 체크: 0자)</div>
       </div>
 
       <div class="quiz-box">
@@ -1110,29 +1110,60 @@
     var currentQuizAnswer = null;
     var quizLocked = false;
 
-    function getQuizCandidatePool(grade) {
+    function matchesCharEntry(item, entry) {
+      if (!item || !item[0] || !entry) return false;
+      var key = makeCharKey(item);
+      return entry === key || entry === item[0];
+    }
+
+    function isCharLearned(item) {
+      var learned = Array.isArray(progress.learnedChars) ? progress.learnedChars : [];
+      return learned.some(function(entry) { return matchesCharEntry(item, entry); });
+    }
+
+    function isCharTraced(item) {
+      var traced = Array.isArray(progress.tracedChars) ? progress.tracedChars : [];
+      return traced.some(function(entry) { return matchesCharEntry(item, entry); });
+    }
+
+    function getGradeQuizCounts(grade) {
       var targetGrade = grade || currentQuizGrade || 'all';
-      var pool = [];
+      var learnedCount = 0;
+      var tracedCount = 0;
+      var memoPool = [];
+
       for (var i = 0; i < hanjaDB.length; i++) {
         var it = hanjaDB[i];
         if (targetGrade !== 'all' && it[2] !== targetGrade) continue;
-        if (isMasteredForQuiz(it)) {
-          pool.push(it);
-        }
+        if (isCharLearned(it)) learnedCount++;
+        if (isCharTraced(it)) tracedCount++;
+        if (isCharMemorized(it)) memoPool.push(it);
       }
-      return pool;
+
+      return {
+        learnedCount: learnedCount,
+        tracedCount: tracedCount,
+        memoPool: memoPool
+      };
     }
 
-    function updateQuizPoolBadge(poolCount) {
+    function getQuizCandidatePool(grade) {
+      return getGradeQuizCounts(grade).memoPool;
+    }
+
+    function updateQuizPoolBadge(counts) {
       var el = document.getElementById('quizPoolCount');
       if (!el) return;
+      var c = counts || getGradeQuizCounts(currentQuizGrade);
       var gradeLabel = currentQuizGrade === 'all' ? '전체 급수' : currentQuizGrade;
-      el.innerHTML = gradeLabel + ' 익힌/따라 쓴 글자: ' + poolCount + '자';
+      el.innerHTML =
+        gradeLabel +
+        ' 익힌 글자: ' + c.learnedCount + '자 · 따라 쓴 글자: ' + c.tracedCount + '자' +
+        ' (암기 체크 출제: ' + c.memoPool.length + '자)';
     }
 
     function refreshQuizPoolBadgeIfNeeded() {
-      var pool = getQuizCandidatePool(currentQuizGrade);
-      updateQuizPoolBadge(pool.length);
+      updateQuizPoolBadge(getGradeQuizCounts(currentQuizGrade));
     }
 
     function filterQuizGrade(grade, btn) {
@@ -1157,6 +1188,19 @@
       }
     }
 
+    function isValidKoreanMeaningLabel(val) {
+      if (typeof val !== 'string') return false;
+      var s = val.trim();
+      if (!s) return false;
+      // Exclude grade-index entries like "급수한자 특급-1210" or "한자 亶"
+      if (s.indexOf('급수한자') !== -1 || s.indexOf('배정한자') !== -1) return false;
+      if (/^한자\s*[\u3400-\u9FFF\uF900-\uFAFF]/.test(s)) return false;
+      // Must contain Hangul characters and no CJK ideographs
+      var hasHangul = /[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(s);
+      var hasHanja = /[\u3400-\u9FFF\uF900-\uFAFF]/.test(s);
+      return hasHangul && !hasHanja;
+    }
+
     function nextQuiz() {
       quizLocked = false;
       var fb = document.getElementById('quizFeedback');
@@ -1167,19 +1211,20 @@
       fb.innerHTML = '';
       fb.style.color = '#333';
 
-      var pool = getQuizCandidatePool(currentQuizGrade);
-      updateQuizPoolBadge(pool.length);
+      var counts = getGradeQuizCounts(currentQuizGrade);
+      var pool = counts.memoPool;
+      updateQuizPoolBadge(counts);
 
       if (pool.length === 0) {
         currentQuizAnswer = null;
         var label = currentQuizGrade === 'all' ? '아직' : (currentQuizGrade + '에서 아직');
-        document.getElementById('quizGradeBadge').innerHTML = label + ' 익히거나 따라 쓴 글자가 없어요';
+        document.getElementById('quizGradeBadge').innerHTML = label + ' 암기 체크한 글자가 없어요';
         document.getElementById('quizHanjaChar').innerHTML = '?';
         if (hintBtn) hintBtn.style.display = 'none';
         if (learnBtn) learnBtn.style.display = 'inline-block';
         box.innerHTML = '';
         fb.style.color = '#D96500';
-        fb.innerHTML = '1. 급수별 한자에서 글자를 누르거나 4. 따라 쓰기를 완료한 글자만 퀴즈에 나와요!';
+        fb.innerHTML = '1. 급수별 한자에서 글자를 열고 [암기 체크]를 누른 글자만 퀴즈에 나와요!';
         return;
       }
 
@@ -1188,18 +1233,35 @@
 
       var correct = pool[Math.floor(Math.random() * pool.length)];
       currentQuizAnswer = correct;
-      document.getElementById('quizGradeBadge').innerHTML = correct[2] + ' 배정한자 (익힌·따라 쓴 글자)';
+      document.getElementById('quizGradeBadge').innerHTML = correct[2] + ' 배정한자 (암기 체크한 글자)';
       document.getElementById('quizHanjaChar').innerHTML = correct[0];
 
-      var sourceList = hanjaDB.length >= 4 ? hanjaDB : baseHanjaDB;
-      var opts = [correct[1]];
-      var guard = 0;
-      while (opts.length < 4 && guard < 120) {
-        guard++;
-        var cand = sourceList[Math.floor(Math.random() * sourceList.length)][1];
-        if (opts.indexOf(cand) === -1) opts.push(cand);
+      var validMeanings = [];
+      var sourceList = hanjaDB.concat(baseHanjaDB);
+      for (var m = 0; m < sourceList.length; m++) {
+        var row = sourceList[m];
+        if (Array.isArray(row) && isValidKoreanMeaningLabel(row[1])) {
+          var cleanM = row[1].trim();
+          if (validMeanings.indexOf(cleanM) === -1) validMeanings.push(cleanM);
+        }
       }
-      var dummyLabels = ['하늘 천', '땅 지', '큰 대', '작을 소', '불 화', '물 수'];
+
+      var correctLabel = isValidKoreanMeaningLabel(correct[1]) ? correct[1].trim() : '하늘 천';
+      var opts = [correctLabel];
+
+      // Shuffle validMeanings to pick 3 distinct Korean meanings
+      var shuffledPool = validMeanings.slice();
+      for (var p = shuffledPool.length - 1; p > 0; p--) {
+        var rp = Math.floor(Math.random() * (p + 1));
+        var tmpP = shuffledPool[p]; shuffledPool[p] = shuffledPool[rp]; shuffledPool[rp] = tmpP;
+      }
+      for (var qIdx = 0; qIdx < shuffledPool.length && opts.length < 4; qIdx++) {
+        if (opts.indexOf(shuffledPool[qIdx]) === -1) {
+          opts.push(shuffledPool[qIdx]);
+        }
+      }
+
+      var dummyLabels = ['하늘 천', '땅 지', '큰 대', '작을 소', '불 화', '물 수', '사람 인', '날 일'];
       var dIdx = 0;
       while (opts.length < 4 && dIdx < dummyLabels.length) {
         if (opts.indexOf(dummyLabels[dIdx]) === -1) opts.push(dummyLabels[dIdx]);
@@ -1213,12 +1275,12 @@
 
       box.innerHTML = '';
       for (var k = 0; k < opts.length; k++) {
-        (function(label) {
+        (function(optLabel) {
           var b = document.createElement('button');
           b.type = 'button';
           b.className = 'quiz-opt-btn';
-          b.innerHTML = label;
-          b.onclick = function() { checkQuizAnswer(label, b); };
+          b.innerHTML = optLabel;
+          b.onclick = function() { checkQuizAnswer(optLabel, b); };
           box.appendChild(b);
         })(opts[k]);
       }
