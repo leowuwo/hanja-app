@@ -233,13 +233,37 @@
 
     <!-- 5. 한자 퀴즈 -->
     <section id="tab5" class="section">
-      <h2>🎯 한자를 보고 알맞은 훈(뜻)과 음(소리)을 맞혀요!</h2>
+      <h2>🎯 익힌 한자 · 따라 쓴 한자 퀴즈</h2>
+
+      <div class="top-category-bar">
+        <div class="cat-tabs" id="quizGradeTabs">
+          <button type="button" class="cat-btn active" onclick="filterQuizGrade('all', this)">전체</button>
+          <button type="button" class="cat-btn" onclick="filterQuizGrade('8급', this)">8급</button>
+          <button type="button" class="cat-btn" onclick="filterQuizGrade('7급Ⅱ', this)">7급Ⅱ</button>
+          <button type="button" class="cat-btn" onclick="filterQuizGrade('7급', this)">7급</button>
+          <button type="button" class="cat-btn" onclick="filterQuizGrade('6급Ⅱ', this)">6급Ⅱ</button>
+          <button type="button" class="cat-btn" onclick="filterQuizGrade('6급', this)">6급</button>
+          <button type="button" class="cat-btn" onclick="filterQuizGrade('5급Ⅱ', this)">5급Ⅱ</button>
+          <button type="button" class="cat-btn" onclick="filterQuizGrade('5급', this)">5급</button>
+          <button type="button" class="cat-btn" onclick="filterQuizGrade('4급Ⅱ', this)">4급Ⅱ</button>
+          <button type="button" class="cat-btn" onclick="filterQuizGrade('4급', this)">4급</button>
+          <button type="button" class="cat-btn" onclick="filterQuizGrade('3급Ⅱ', this)">3급Ⅱ</button>
+          <button type="button" class="cat-btn" onclick="filterQuizGrade('3급', this)">3급</button>
+          <button type="button" class="cat-btn" onclick="filterQuizGrade('2급', this)">2급</button>
+          <button type="button" class="cat-btn" onclick="filterQuizGrade('1급', this)">1급</button>
+          <button type="button" class="cat-btn" onclick="filterQuizGrade('준특급', this)">준특급</button>
+          <button type="button" class="cat-btn" onclick="filterQuizGrade('특급', this)">특급</button>
+        </div>
+        <div id="quizPoolCount" style="font-size:0.88rem; color:#5A3A00; font-weight:bold;">전체 급수 익힌/따라 쓴 글자: 0자</div>
+      </div>
+
       <div class="quiz-box">
         <div>
           <div id="quizGradeBadge" style="font-size:0.9rem; color:#888; margin-bottom:4px;"></div>
           <div class="quiz-char-box hanja-font" id="quizHanjaChar">山</div>
           <div style="margin-top:6px;">
-            <button type="button" class="action-btn blue" onclick="playQuizHint()">🔊 힌트 듣기</button>
+            <button type="button" class="action-btn blue" id="quizHintBtn" onclick="playQuizHint()">🔊 힌트 듣기</button>
+            <button type="button" class="action-btn green" id="quizGoLearnBtn" style="display:none;" onclick="goLearnFromQuiz()">✍️ 글자 익히러 가기</button>
           </div>
         </div>
         <div class="quiz-options" id="quizOptions"></div>
@@ -430,9 +454,65 @@
     function loadProgress() {
       try {
         var raw = window.localStorage.getItem('hanjaAppCustomV2');
-        if (raw) return JSON.parse(raw);
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          return {
+            stars: parsed.stars || 0,
+            written: parsed.written || 0,
+            quiz: parsed.quiz || 0,
+            stickers: Array.isArray(parsed.stickers) ? parsed.stickers : [],
+            learnedChars: Array.isArray(parsed.learnedChars) ? parsed.learnedChars : [],
+            tracedChars: Array.isArray(parsed.tracedChars) ? parsed.tracedChars : []
+          };
+        }
       } catch (e) {}
-      return { stars: 0, written: 0, quiz: 0, stickers: [] };
+      return { stars: 0, written: 0, quiz: 0, stickers: [], learnedChars: [], tracedChars: [] };
+    }
+
+    function makeCharKey(item) {
+      if (!item) return '';
+      return (item[0] || '') + '|' + (item[2] || '');
+    }
+
+    function markCharLearned(item) {
+      if (!item || !item[0]) return;
+      if (!Array.isArray(progress.learnedChars)) progress.learnedChars = [];
+      var key = makeCharKey(item);
+      var exists = progress.learnedChars.some(function(entry) {
+        return entry === key || entry === item[0];
+      });
+      if (!exists) {
+        progress.learnedChars.push(key);
+        saveProgress();
+      }
+      refreshQuizPoolBadgeIfNeeded();
+    }
+
+    function markCharTraced(item) {
+      if (!item || !item[0]) return;
+      if (!Array.isArray(progress.tracedChars)) progress.tracedChars = [];
+      var key = makeCharKey(item);
+      var exists = progress.tracedChars.some(function(entry) {
+        return entry === key || entry === item[0];
+      });
+      if (!exists) {
+        progress.tracedChars.push(key);
+        saveProgress();
+      }
+      refreshQuizPoolBadgeIfNeeded();
+    }
+
+    function isMasteredForQuiz(item) {
+      if (!item || !item[0]) return false;
+      var key = makeCharKey(item);
+      var learned = Array.isArray(progress.learnedChars) ? progress.learnedChars : [];
+      var traced = Array.isArray(progress.tracedChars) ? progress.tracedChars : [];
+      return (
+        learned.indexOf(key) !== -1 ||
+        learned.indexOf(item[0]) !== -1 ||
+        traced.indexOf(key) !== -1 ||
+        traced.indexOf(item[0]) !== -1
+      );
     }
     function saveProgress() {
       try { window.localStorage.setItem('hanjaAppCustomV2', JSON.stringify(progress)); } catch (e) {}
@@ -597,6 +677,7 @@
 
     function openHanjaSolo(item) {
       selectedHanja = item;
+      markCharLearned(item);
       document.getElementById('hanjaListView').style.display = 'none';
       document.getElementById('hanjaSoloView').style.display = 'flex';
       document.getElementById('soloHanjaChar').innerHTML = item[0];
@@ -958,6 +1039,7 @@
 
     function completeWriting() {
       if (!hasDrawnStroke) return;
+      markCharTraced(currentWriteItem);
       progress.stars = (progress.stars || 0) + 1;
       progress.written = (progress.written || 0) + 1;
       var reward = stickerRewards[progress.written % stickerRewards.length];
@@ -971,22 +1053,97 @@
       nextWriteHanja(false, true);
     }
 
+    var currentQuizGrade = 'all';
     var currentQuizAnswer = null;
     var quizLocked = false;
 
+    function getQuizCandidatePool(grade) {
+      var targetGrade = grade || currentQuizGrade || 'all';
+      var pool = [];
+      for (var i = 0; i < hanjaDB.length; i++) {
+        var it = hanjaDB[i];
+        if (targetGrade !== 'all' && it[2] !== targetGrade) continue;
+        if (isMasteredForQuiz(it)) {
+          pool.push(it);
+        }
+      }
+      return pool;
+    }
+
+    function updateQuizPoolBadge(poolCount) {
+      var el = document.getElementById('quizPoolCount');
+      if (!el) return;
+      var gradeLabel = currentQuizGrade === 'all' ? '전체 급수' : currentQuizGrade;
+      el.innerHTML = gradeLabel + ' 익힌/따라 쓴 글자: ' + poolCount + '자';
+    }
+
+    function refreshQuizPoolBadgeIfNeeded() {
+      var pool = getQuizCandidatePool(currentQuizGrade);
+      updateQuizPoolBadge(pool.length);
+    }
+
+    function filterQuizGrade(grade, btn) {
+      currentQuizGrade = grade || 'all';
+      var btns = document.querySelectorAll('#quizGradeTabs .cat-btn');
+      for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+      if (btn) btn.classList.add('active');
+      nextQuiz();
+    }
+
+    function goLearnFromQuiz() {
+      var tab1Btn = document.querySelectorAll('#mainNav .nav-btn')[0];
+      showTab('tab1', tab1Btn);
+      if (currentQuizGrade && currentQuizGrade !== 'all') {
+        var gradeBtns = document.querySelectorAll('#gradeTabs .cat-btn');
+        for (var i = 0; i < gradeBtns.length; i++) {
+          if (gradeBtns[i].textContent.trim() === currentQuizGrade) {
+            filterGrade(currentQuizGrade, gradeBtns[i]);
+            return;
+          }
+        }
+      }
+    }
+
     function nextQuiz() {
       quizLocked = false;
-      document.getElementById('quizFeedback').innerHTML = '';
-      var correct = hanjaDB[Math.floor(Math.random() * hanjaDB.length)];
+      var fb = document.getElementById('quizFeedback');
+      var hintBtn = document.getElementById('quizHintBtn');
+      var learnBtn = document.getElementById('quizGoLearnBtn');
+      var box = document.getElementById('quizOptions');
+
+      fb.innerHTML = '';
+      fb.style.color = '#333';
+
+      var pool = getQuizCandidatePool(currentQuizGrade);
+      updateQuizPoolBadge(pool.length);
+
+      if (pool.length === 0) {
+        currentQuizAnswer = null;
+        var label = currentQuizGrade === 'all' ? '아직' : (currentQuizGrade + '에서 아직');
+        document.getElementById('quizGradeBadge').innerHTML = label + ' 익히거나 따라 쓴 글자가 없어요';
+        document.getElementById('quizHanjaChar').innerHTML = '?';
+        if (hintBtn) hintBtn.style.display = 'none';
+        if (learnBtn) learnBtn.style.display = 'inline-block';
+        box.innerHTML = '';
+        fb.style.color = '#D96500';
+        fb.innerHTML = '1. 급수별 한자에서 글자를 누르거나 4. 따라 쓰기를 완료한 글자만 퀴즈에 나와요!';
+        return;
+      }
+
+      if (hintBtn) hintBtn.style.display = 'inline-block';
+      if (learnBtn) learnBtn.style.display = 'none';
+
+      var correct = pool[Math.floor(Math.random() * pool.length)];
       currentQuizAnswer = correct;
-      document.getElementById('quizGradeBadge').innerHTML = correct[2] + ' 배정한자';
+      document.getElementById('quizGradeBadge').innerHTML = correct[2] + ' 배정한자 (익힌·따라 쓴 글자)';
       document.getElementById('quizHanjaChar').innerHTML = correct[0];
 
+      var sourceList = hanjaDB.length >= 4 ? hanjaDB : baseHanjaDB;
       var opts = [correct[1]];
       var guard = 0;
-      while (opts.length < 4 && guard < 100) {
+      while (opts.length < 4 && guard < 120) {
         guard++;
-        var cand = hanjaDB[Math.floor(Math.random() * hanjaDB.length)][1];
+        var cand = sourceList[Math.floor(Math.random() * sourceList.length)][1];
         if (opts.indexOf(cand) === -1) opts.push(cand);
       }
       var dummyLabels = ['하늘 천', '땅 지', '큰 대', '작을 소', '불 화', '물 수'];
@@ -1001,7 +1158,6 @@
         var tmp = opts[s]; opts[s] = opts[r]; opts[r] = tmp;
       }
 
-      var box = document.getElementById('quizOptions');
       box.innerHTML = '';
       for (var k = 0; k < opts.length; k++) {
         (function(label) {
@@ -1060,10 +1216,11 @@
     }
 
     function resetProgress() {
-      if (!confirm('지금까지 모은 별과 스티커 기록을 초기화할까요?')) return;
-      progress = { stars: 0, written: 0, quiz: 0, stickers: [] };
+      if (!confirm('지금까지 모은 별과 스티커, 익힌 글자 기록을 초기화할까요?')) return;
+      progress = { stars: 0, written: 0, quiz: 0, stickers: [], learnedChars: [], tracedChars: [] };
       saveProgress();
       updateStatsUI();
+      nextQuiz();
       showToast('기록이 초기화되었어요.');
     }
 
@@ -1082,6 +1239,7 @@
       if (btn) btn.classList.add('active');
 
       if (tabId === 'tab4') drawGuideHanja(currentWriteItem);
+      if (tabId === 'tab5') nextQuiz();
     }
 
     function mergeExternalData() {
@@ -1117,7 +1275,7 @@ window.addEventListener('DOMContentLoaded', function() {
       return res.json();
     });
 
-  var idiomMainReq = fetch('./sajaseongeo_1000.json?v=' + Date.now(), { cache: 'no-store' })
+  var idiomMainReq = fetch('./sajaseongeo_1000_3.json?v=' + Date.now(), { cache: 'no-store' })
     .then(function(res) {
       if (!res.ok) throw new Error('사자성어 1000 JSON HTTP ' + res.status);
       return res.json();
