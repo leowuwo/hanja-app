@@ -1117,7 +1117,7 @@ window.addEventListener('DOMContentLoaded', function() {
       return res.json();
     });
 
-  var idiomMainReq = fetch('./sajaseongeo_1000_3.json?v=' + Date.now(), { cache: 'no-store' })
+  var idiomMainReq = fetch('./sajaseongeo_1000.json?v=' + Date.now(), { cache: 'no-store' })
     .then(function(res) {
       if (!res.ok) throw new Error('사자성어 1000 JSON HTTP ' + res.status);
       return res.json();
