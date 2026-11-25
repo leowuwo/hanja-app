@@ -135,6 +135,33 @@
       }
     }
 
+    @media (orientation: landscape) and (max-height: 540px) {
+      header {
+        padding: 4px 12px;
+      }
+      nav {
+        grid-template-columns: repeat(6, 1fr);
+        padding: 3px 8px;
+        gap: 4px;
+      }
+      .nav-btn {
+        padding: 4px 6px;
+        font-size: 0.78rem;
+      }
+      main {
+        max-width: 100%;
+        padding: 5px 12px 6px;
+      }
+      h2 {
+        font-size: 0.98rem;
+        margin-bottom: 4px;
+      }
+      .top-category-bar {
+        padding: 4px 8px;
+        margin-bottom: 4px;
+      }
+    }
+
     .section {
       display: none;
       flex: 1;
@@ -422,14 +449,14 @@
     }
 
     .solo-big-char {
-      font-size: clamp(3.8rem, 17dvh, 9rem);
+      font-size: clamp(4.2rem, 17dvh, 9rem);
       line-height: 1.05;
       color: #222;
       margin: 2px 0;
     }
 
     .solo-idiom-word {
-      font-size: clamp(2.1rem, 8.5dvh, 5.2rem);
+      font-size: clamp(2.2rem, 8.5dvh, 5.2rem);
       line-height: 1.12;
       color: #1B4965;
       margin: 2px 0;
@@ -469,101 +496,39 @@
       word-break: keep-all;
     }
 
-    .solo-action-stack {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      width: 100%;
-      flex-shrink: 0;
+    @media (orientation: landscape) and (max-height: 540px) {
+      .solo-view {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        align-items: center;
+        padding: 8px 14px;
+        gap: 10px;
+      }
+      .solo-view > .back-bar {
+        width: 100%;
+        margin-bottom: 0;
+      }
+      .solo-big-char {
+        font-size: clamp(3.6rem, 26dvh, 6.2rem);
+      }
+      .solo-idiom-word {
+        font-size: clamp(2rem, 15dvh, 3.8rem);
+      }
+      .solo-sub {
+        font-size: clamp(1.05rem, 5dvh, 1.4rem);
+      }
+      .solo-detail {
+        max-width: 440px;
+        width: auto;
+        font-size: 0.88rem;
+        margin-bottom: 0;
+      }
+      .solo-action-stack {
+        width: auto;
+        gap: 4px;
+      }
     }
-
-    .solo-action-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 6px;
-      width: 100%;
-    }
-
-    .solo-nav-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 6px;
-      width: 100%;
-      margin-top: 2px;
-    }
-
-    /* 필순 규칙 카드 */
-    .rule-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 8px;
-      flex: 1;
-      min-height: 0;
-      overflow-y: auto;
-      align-content: start;
-      padding-bottom: 4px;
-    }
-
-    .rule-card {
-      background: #fff;
-      border: 2px solid #A8DADC;
-      border-radius: 14px;
-      padding: 10px 12px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-      cursor: pointer;
-    }
-
-    .rule-title {
-      font-size: clamp(0.92rem, 2.2vw, 1.05rem);
-      color: #00695C;
-      margin-bottom: 3px;
-    }
-
-    .rule-desc {
-      font-size: clamp(0.8rem, 2vw, 0.9rem);
-      color: #444;
-      line-height: 1.38;
-      margin-bottom: 5px;
-    }
-
-    .rule-ex {
-      font-size: clamp(1rem, 2.5vw, 1.25rem);
-      color: #FF7A00;
-      background: #FFF9EC;
-      padding: 3px 8px;
-      border-radius: 9px;
-      display: inline-block;
-    }
-
-    /* 따라 쓰기 캔버스 */
-    .canvas-container {
-      background: #fff;
-      border-radius: 18px;
-      padding: 8px 10px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 0;
-      overflow: hidden;
-    }
-
-    .write-header-bar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      flex-wrap: wrap;
-      margin-bottom: 4px;
-      flex-shrink: 0;
-    }
-
     .canvas-wrap {
       flex: 1;
       display: flex;
@@ -587,68 +552,21 @@
       display: block;
     }
 
+    @media (orientation: landscape) and (max-height: 540px) {
+      #writeCanvas {
+        width: min(72vw, 54dvh);
+        height: min(72vw, 54dvh);
+        min-width: 180px;
+        min-height: 180px;
+      }
+    }
+
     .write-controls {
       margin-top: 4px;
       flex-shrink: 0;
     }
-
-    /* 버튼 스타일 */
-    .action-btn {
-      background: #FF7A00;
-      color: #fff;
-      border: none;
-      padding: 7px 14px;
-      font-size: clamp(0.85rem, 2.2dvh, 1rem);
-      border-radius: 12px;
-      margin: 2px;
-      cursor: pointer;
-      box-shadow: 0 3px 0 #C85500;
-    }
-
-    .action-btn.blue {
-      background: #3A86FF;
-      box-shadow: 0 3px 0 #2667CC;
-    }
-
-    .action-btn.green {
-      background: #2EC4B6;
-      box-shadow: 0 3px 0 #1F8E83;
-    }
-
-    .action-btn:disabled {
-      background: #CCCCCC !important;
-      box-shadow: 0 3px 0 #999999 !important;
-      color: #777777 !important;
-      cursor: not-allowed;
-      opacity: 0.7;
-    }
-
-    .mini-btn {
-      padding: 4px 8px;
-      font-size: clamp(0.76rem, 1.9vw, 0.88rem);
-      border-radius: 9px;
-      border: 2px solid #DDD;
-      background: #FAFAFA;
-      cursor: pointer;
-    }
-
-    /* 퀴즈 영역 */
-    .quiz-box {
-      background: #fff;
-      border-radius: 18px;
-      padding: 10px 12px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 0;
-      overflow-y: auto;
-    }
-
     .quiz-char-box {
-      font-size: clamp(3.2rem, 14dvh, 8rem);
+      font-size: clamp(3.4rem, 14dvh, 8rem);
       line-height: 1.05;
       color: #222;
       background: #FFF9EC;
@@ -666,6 +584,42 @@
       margin-top: 6px;
     }
 
+    @media (orientation: landscape) and (max-height: 540px) {
+      .quiz-box {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 8px 14px;
+      }
+      .quiz-box > div:first-child {
+        flex: 0 0 auto;
+        min-width: 150px;
+      }
+      .quiz-char-box {
+        font-size: clamp(3rem, 24dvh, 5.2rem);
+        padding: 6px 18px;
+      }
+      .quiz-options {
+        flex: 1;
+        margin-top: 0;
+        gap: 8px;
+      }
+      .quiz-opt-btn {
+        padding: 10px 8px;
+        font-size: 1rem;
+      }
+      #quizFeedback {
+        position: absolute;
+        left: 50%;
+        bottom: 10px;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.95);
+        padding: 2px 10px;
+        border-radius: 8px;
+      }
+    }
+
     .quiz-opt-btn {
       background: #FFF9EC;
       border: 2.5px solid #FFD166;
@@ -674,697 +628,6 @@
       font-size: clamp(0.92rem, 2.4dvh, 1.2rem);
       cursor: pointer;
       word-break: keep-all;
-    }
-
-    /* 공부방 및 스티커 */
-    .stats-card {
-      background: #fff;
-      border-radius: 18px;
-      padding: 12px 14px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 8px;
-      min-height: 0;
-      overflow-y: auto;
-    }
-
-    .sticker-board {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-      font-size: clamp(1.5rem, 4.5dvh, 2.2rem);
-      background: #FFF5E4;
-      padding: 10px;
-      border-radius: 14px;
-      flex: 1;
-      min-height: 80px;
-      overflow-y: auto;
-      align-content: flex-start;
-    }
-
-    .pagination-bar {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      margin-top: 6px;
-      flex-wrap: wrap;
-      flex-shrink: 0;
-    }
-
-    .action-btn.memorized {
-      background: #FFF4E6;
-      color: #D96500;
-      border: 2px solid #FF922B;
-      box-shadow: 0 3px 0 #E8770E;
-    }
-
-    .hanja-card.is-memorized {
-      border-color: #FF922B;
-      background: #FFFDF8;
-    }
-
-    .memo-badge {
-      position: absolute;
-      bottom: 5px;
-      right: 6px;
-      font-size: 0.64rem;
-      background: #FFE8CC;
-      color: #C95B00;
-      padding: 1px 5px;
-      border-radius: 7px;
-      font-weight: bold;
-    }
-
-    .toast-msg {
-      position: fixed;
-      bottom: 14px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(33, 37, 41, 0.92);
-      color: #fff;
-      padding: 8px 16px;
-      border-radius: 14px;
-      font-size: 0.92rem;
-      z-index: 999;
-      display: none;
-      max-width: 92vw;
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <div>🀄 신나는 한자 놀이터 (8급~특급 · 사자성어 1,000선)</div>
-    <div class="header-right">
-      <select id="voiceProfileSelect" class="voice-select" onchange="changeVoiceProfile()" aria-label="목소리 선택">
-        <option value="woman">👩 여자 어른</option>
-        <option value="girl">👧 여자 아이</option>
-        <option value="boy">👦 남자 아이</option>
-        <option value="man">👨 남자 어른</option>
-      </select>
-      <div class="star-badge">⭐ 별: <span id="starCount">0</span>개</div>
-    </div>
-  </header>
-
-  <nav id="mainNav">
-    <button type="button" class="nav-btn active" onclick="showTab('tab1', this)">1. 급수별 한자</button>
-    <button type="button" class="nav-btn" onclick="showTab('tab2', this)">2. 쓰는 법(필순)</button>
-    <button type="button" class="nav-btn" onclick="showTab('tab3', this)">3. 사자성어(1000)</button>
-    <button type="button" class="nav-btn" onclick="showTab('tab4', this)">4. 따라 쓰기</button>
-    <button type="button" class="nav-btn" onclick="showTab('tab5', this)">5. 한자 퀴즈</button>
-    <button type="button" class="nav-btn" onclick="showTab('tab6', this)">6. 공부방</button>
-  </nav>
-
-  <main>
-    <!-- 1. 급수별 한자 -->
-    <section id="tab1" class="section active">
-      <div id="hanjaListView" style="display:flex; flex-direction:column;">
-        <h2>🀄 8급~특급 급수별 배정한자 현황 및 학습</h2>
-
-        <div class="top-category-bar">
-          <div class="cat-tabs" id="gradeTabs">
-            <button type="button" class="cat-btn active" onclick="filterGrade('all', this)">전체</button>
-            <button type="button" class="cat-btn" onclick="filterGrade('8급', this)">8급</button>
-            <button type="button" class="cat-btn" onclick="filterGrade('7급Ⅱ', this)">7급Ⅱ</button>
-            <button type="button" class="cat-btn" onclick="filterGrade('7급', this)">7급</button>
-            <button type="button" class="cat-btn" onclick="filterGrade('6급Ⅱ', this)">6급Ⅱ</button>
-            <button type="button" class="cat-btn" onclick="filterGrade('6급', this)">6급</button>
-            <button type="button" class="cat-btn" onclick="filterGrade('5급Ⅱ', this)">5급Ⅱ</button>
-            <button type="button" class="cat-btn" onclick="filterGrade('5급', this)">5급</button>
-            <button type="button" class="cat-btn" onclick="filterGrade('4급Ⅱ', this)">4급Ⅱ</button>
-            <button type="button" class="cat-btn" onclick="filterGrade('4급', this)">4급</button>
-            <button type="button" class="cat-btn" onclick="filterGrade('3급Ⅱ', this)">3급Ⅱ</button>
-            <button type="button" class="cat-btn" onclick="filterGrade('3급', this)">3급</button>
-            <button type="button" class="cat-btn" onclick="filterGrade('2급', this)">2급</button>
-            <button type="button" class="cat-btn" onclick="filterGrade('1급', this)">1급</button>
-            <button type="button" class="cat-btn" onclick="filterGrade('준특급', this)">준특급</button>
-            <button type="button" class="cat-btn" onclick="filterGrade('특급', this)">특급</button>
-          </div>
-          <input type="text" id="hanjaSearch" placeholder="한자·훈·음 검색" oninput="hanjaPage=1; renderHanjaGrid();" style="padding:5px 9px; width:140px; border-radius:10px; border:2px solid #CCC; font-size:0.85rem;">
-        </div>
-
-        <div class="count-info" id="hanjaCountInfo"></div>
-        <div class="hanja-grid" id="hanjaGrid"></div>
-        <div class="pagination-bar" id="hanjaPagination"></div>
-
-        <div style="overflow-x:auto; margin-top:8px;">
-          <table class="grade-summary-table" id="gradeSummaryTable">
-            <thead>
-              <tr>
-                <th>급수</th><th>읽기(누적)</th><th>신출(추가)</th><th>쓰기(누적)</th><th>비고</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div id="hanjaSoloView" class="solo-view" style="display:none;">
-        <div class="back-bar" style="width:100%; justify-content:flex-start; align-items:center; gap:8px;">
-          <button type="button" class="back-btn" onclick="closeHanjaSolo()">← 목록으로</button>
-        </div>
-        <div class="solo-big-char hanja-font" id="soloHanjaChar">國</div>
-        <div class="solo-sub" id="soloHanjaHuneum">나라 국</div>
-        <div class="solo-detail" id="soloHanjaDetail"></div>
-        <div class="solo-action-stack">
-          <div class="solo-action-row">
-            <button type="button" class="action-btn blue" id="soloHanjaSpeakBtn">🔊 훈음 듣기</button>
-            <button type="button" class="action-btn green" id="soloHanjaWriteBtn">✍️ 따라 쓰기</button>
-          </div>
-          <div class="solo-action-row">
-            <button type="button" class="action-btn" id="soloHanjaMemoBtn" onclick="toggleMemorizedCurrentHanja()">암기 체크</button>
-          </div>
-          <div class="solo-nav-row">
-            <button type="button" class="back-btn" id="soloPrevBtn" style="background:#3A86FF; box-shadow:0 2px 0 #2667CC;" onclick="prevHanjaSolo()">← 이전</button>
-            <button type="button" class="back-btn" id="soloNextBtn" style="background:#FF7A00; box-shadow:0 2px 0 #C85500;" onclick="nextHanjaSolo()">다음 →</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 2. 쓰는 법(필순 8원칙) -->
-    <section id="tab2" class="section">
-      <h2>✍️ 한자 쓰는 법 (필순의 8대 대원칙)</h2>
-      <div class="rule-grid" id="strokeRuleGrid"></div>
-    </section>
-
-    <!-- 3. 1급 대비 사자성어 1,000선 -->
-    <section id="tab3" class="section">
-      <div id="idiomListView" style="display:flex; flex-direction:column;">
-        <h2>📜 한자능력검정시험 1급 대비 사자성어 1,000선</h2>
-        <div class="top-category-bar">
-          <div class="cat-tabs">
-            <button type="button" class="cat-btn active" onclick="filterIdiomType('all', this)">전체</button>
-            <button type="button" class="cat-btn" onclick="filterIdiomType('필수·1급', this)">핵심 고사성어</button>
-            <button type="button" class="cat-btn" onclick="filterIdiomType('1급심화', this)">1급 심화 성어·어휘</button>
-          </div>
-          <input type="text" id="idiomSearch" placeholder="성어·독음·뜻 검색" oninput="idiomPage=1; closeIdiomSolo(true); renderIdioms();" style="padding:5px 9px; width:155px; border-radius:10px; border:2px solid #CCC; font-size:0.85rem;">
-        </div>
-        <div class="count-info" id="idiomCountInfo"></div>
-        <div class="idiom-grid" id="idiomGrid"></div>
-        <div class="pagination-bar" id="idiomPagination"></div>
-      </div>
-
-      <div id="idiomSoloView" class="solo-view" style="display:none;">
-        <div class="back-bar" style="width:100%; justify-content:flex-start; align-items:center; gap:8px; flex-wrap:wrap;">
-          <button type="button" class="back-btn" onclick="closeIdiomSolo()">← 목록으로</button>
-        </div>
-        <div class="solo-grade-chip" id="soloIdiomGrade">핵심 고사성어</div>
-        <div class="solo-idiom-word hanja-font" id="soloIdiomWord">溫故知新</div>
-        <div class="solo-sub" id="soloIdiomRead">온고지신</div>
-        <div class="solo-detail" id="soloIdiomMean">옛것을 익히고 그것을 미루어 새것을 앎.</div>
-        <div class="solo-action-stack">
-          <div class="solo-action-row">
-            <button type="button" class="action-btn blue" id="soloIdiomSpeakBtn" onclick="speakCurrentIdiom()">🔊 뜻·독음 듣기</button>
-          </div>
-          <div class="solo-action-row">
-            <button type="button" class="action-btn" id="soloIdiomMemoBtn" onclick="toggleMemorizedCurrentIdiom()">암기 체크</button>
-          </div>
-          <div class="solo-nav-row">
-            <button type="button" class="back-btn" id="idiomSoloPrevBtn" style="background:#3A86FF; box-shadow:0 2px 0 #2667CC;" onclick="prevIdiomSolo()">← 이전</button>
-            <button type="button" class="back-btn" id="idiomSoloNextBtn" style="background:#FF7A00; box-shadow:0 2px 0 #C85500;" onclick="nextIdiomSolo()">다음 →</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 4. 따라 쓰기 -->
-    <section id="tab4" class="section">
-      <div class="canvas-container">
-        <div class="write-header-bar">
-          <button type="button" class="back-btn" onclick="goBackFromWrite()">← 뒤로</button>
-          <select id="writeGradeSelect" class="voice-select" style="border-color:#6CD4C3; font-size:0.86rem;" onchange="changeWriteGrade(this.value)" aria-label="따라 쓰기 급수 선택">
-            <option value="all">전체 급수</option>
-            <option value="8급" selected>8급</option>
-            <option value="7급Ⅱ">7급Ⅱ</option>
-            <option value="7급">7급</option>
-            <option value="6급Ⅱ">6급Ⅱ</option>
-            <option value="6급">6급</option>
-            <option value="5급Ⅱ">5급Ⅱ</option>
-            <option value="5급">5급</option>
-            <option value="4급Ⅱ">4급Ⅱ</option>
-            <option value="4급">4급</option>
-            <option value="3급Ⅱ">3급Ⅱ</option>
-            <option value="3급">3급</option>
-            <option value="2급">2급</option>
-            <option value="1급">1급</option>
-            <option value="준특급">준특급</option>
-            <option value="특급">특급</option>
-          </select>
-          <span id="writeOrderBadge" style="font-size:0.82rem; background:#E0F7FA; color:#00695C; padding:3px 7px; border-radius:9px;">1 / 1</span>
-          <span style="font-size:0.95rem;">연습 한자:</span>
-          <strong id="targetWriteChar" class="hanja-font" style="font-size:1.7rem; color:#FF7A00;">國</strong>
-          <span id="targetWriteInfo" style="font-size:0.9rem; color:#555;"></span>
-          <button type="button" class="mini-btn" onclick="prevWriteHanja(true)">◀ 이전</button>
-          <button type="button" class="mini-btn" onclick="nextWriteHanja(true, false)">다음 ▶</button>
-          <button type="button" class="mini-btn" onclick="speakCurrentWrite()">🔊 듣기</button>
-          <button type="button" class="mini-btn" onclick="pickRandomWriteHanja(true)">🎲 랜덤</button>
-        </div>
-        <div class="canvas-wrap">
-          <canvas id="writeCanvas" width="440" height="440"></canvas>
-        </div>
-        <div class="write-controls">
-          <button type="button" class="action-btn" onclick="clearCanvas()">🧹 지우기</button>
-          <button type="button" class="action-btn green" id="completeWriteBtn" onclick="completeWriting()" disabled>🎉 다 썼어요! (+별 1개)</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 5. 한자 퀴즈 -->
-    <section id="tab5" class="section">
-      <h2>🎯 익힌 한자 · 따라 쓴 한자 퀴즈</h2>
-
-      <div class="top-category-bar">
-        <div class="cat-tabs" id="quizGradeTabs">
-          <button type="button" class="cat-btn active" onclick="filterQuizGrade('all', this)">전체</button>
-          <button type="button" class="cat-btn" onclick="filterQuizGrade('8급', this)">8급</button>
-          <button type="button" class="cat-btn" onclick="filterQuizGrade('7급Ⅱ', this)">7급Ⅱ</button>
-          <button type="button" class="cat-btn" onclick="filterQuizGrade('7급', this)">7급</button>
-          <button type="button" class="cat-btn" onclick="filterQuizGrade('6급Ⅱ', this)">6급Ⅱ</button>
-          <button type="button" class="cat-btn" onclick="filterQuizGrade('6급', this)">6급</button>
-          <button type="button" class="cat-btn" onclick="filterQuizGrade('5급Ⅱ', this)">5급Ⅱ</button>
-          <button type="button" class="cat-btn" onclick="filterQuizGrade('5급', this)">5급</button>
-          <button type="button" class="cat-btn" onclick="filterQuizGrade('4급Ⅱ', this)">4급Ⅱ</button>
-          <button type="button" class="cat-btn" onclick="filterQuizGrade('4급', this)">4급</button>
-          <button type="button" class="cat-btn" onclick="filterQuizGrade('3급Ⅱ', this)">3급Ⅱ</button>
-          <button type="button" class="cat-btn" onclick="filterQuizGrade('3급', this)">3급</button>
-          <button type="button" class="cat-btn" onclick="filterQuizGrade('2급', this)">2급</button>
-          <button type="button" class="cat-btn" onclick="filterQuizGrade('1급', this)">1급</button>
-          <button type="button" class="cat-btn" onclick="filterQuizGrade('준특급', this)">준특급</button>
-          <button type="button" class="cat-btn" onclick="filterQuizGrade('특급', this)">특급</button>
-        </div>
-        <div id="quizPoolCount" style="font-size:0.82rem; color:#5A3A00; font-weight:bold;">전체 급수 익힌 글자: 0자 · 따라 쓴 글자: 0자 (암기 체크: 0자)</div>
-      </div>
-
-      <div class="quiz-box">
-        <div>
-          <div id="quizGradeBadge" style="font-size:0.85rem; color:#888; margin-bottom:2px;"></div>
-          <div class="quiz-char-box hanja-font" id="quizHanjaChar">山</div>
-          <div style="margin-top:4px;">
-            <button type="button" class="action-btn blue" id="quizHintBtn" onclick="playQuizHint()">🔊 힌트 듣기</button>
-            <button type="button" class="action-btn green" id="quizGoLearnBtn" style="display:none;" onclick="goLearnFromQuiz()">✍️ 글자 익히러 가기</button>
-          </div>
-        </div>
-        <div class="quiz-options" id="quizOptions"></div>
-        <p id="quizFeedback" style="font-size:1rem; margin:4px 0 0; min-height:22px;"></p>
-      </div>
-    </section>
-
-    <!-- 6. 공부방 -->
-    <section id="tab6" class="section">
-      <h2>🏆 나의 한자 공부방</h2>
-      <div class="stats-card">
-        <div>
-          <h3 style="margin:0 0 4px; font-size:1.05rem;">칭찬 스티커 판</h3>
-          <div style="font-size:0.95rem;">
-            ✍️ 따라 쓴 한자 수: <strong id="writtenCount">0</strong>자 |
-            🎯 맞힌 퀴즈 수: <strong id="quizScore">0</strong>개 |
-            📜 암기한 사자성어: <strong id="memoIdiomCount">0</strong>개
-          </div>
-        </div>
-        <div class="sticker-board" id="stickerBoard"></div>
-        <div>
-          <button type="button" class="action-btn" style="background:#888888; box-shadow:none;" onclick="resetProgress()">기록 초기화</button>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <div class="toast-msg" id="toastMsg"></div>
-
-  <script>
-    var isHandlingPopState = false;
-    var currentNavState = {
-      tabId: 'tab1',
-      soloOpen: false,
-      soloItem: null,
-      idiomSoloOpen: false,
-      idiomSoloItem: null
-    };
-
-    function cloneIdiomItem(it) {
-      if (!it) return null;
-      return {
-        word: it.word || '',
-        read: it.read || '',
-        mean: it.mean || '',
-        grade: it.grade || '필수·1급'
-      };
-    }
-
-    function sameIdiomItem(a, b) {
-      if (!a && !b) return true;
-      if (!a || !b) return false;
-      return (a.word || '') === (b.word || '') && (a.read || '') === (b.read || '');
-    }
-
-    function captureCurrentNavState() {
-      var activeSec = document.querySelector('.section.active');
-      var tabId = (activeSec && activeSec.id) ? activeSec.id : 'tab1';
-      var soloEl = document.getElementById('hanjaSoloView');
-      var isSolo = (tabId === 'tab1' && soloEl && soloEl.style.display !== 'none' && selectedHanja);
-
-      var idiomSoloEl = document.getElementById('idiomSoloView');
-      var isIdiomSolo = (tabId === 'tab3' && idiomSoloEl && idiomSoloEl.style.display !== 'none' && selectedIdiom);
-
-      return {
-        tabId: tabId,
-        soloOpen: Boolean(isSolo),
-        soloItem: isSolo ? [selectedHanja[0], selectedHanja[1], selectedHanja[2], selectedHanja[3], selectedHanja[4]] : null,
-        idiomSoloOpen: Boolean(isIdiomSolo),
-        idiomSoloItem: isIdiomSolo ? cloneIdiomItem(selectedIdiom) : null
-      };
-    }
-
-    function pushAppHistoryState() {
-      if (isHandlingPopState) return;
-      try {
-        if (!window.history || typeof window.history.pushState !== 'function') return;
-        var snap = captureCurrentNavState();
-        var prev = window.history.state;
-        if (
-          prev &&
-          prev.__hanjaApp &&
-          prev.tabId === snap.tabId &&
-          Boolean(prev.soloOpen) === Boolean(snap.soloOpen) &&
-          ((!prev.soloItem && !snap.soloItem) ||
-            (prev.soloItem && snap.soloItem && prev.soloItem[0] === snap.soloItem[0] && prev.soloItem[2] === snap.soloItem[2])) &&
-          Boolean(prev.idiomSoloOpen) === Boolean(snap.idiomSoloOpen) &&
-          sameIdiomItem(prev.idiomSoloItem, snap.idiomSoloItem)
-        ) {
-          return;
-        }
-        window.history.pushState({
-          __hanjaApp: true,
-          tabId: snap.tabId,
-          soloOpen: snap.soloOpen,
-          soloItem: snap.soloItem,
-          idiomSoloOpen: snap.idiomSoloOpen,
-          idiomSoloItem: snap.idiomSoloItem
-        }, '', window.location.href);
-        currentNavState = snap;
-      } catch (e) {}
-    }
-
-    function applyNavState(stateObj) {
-      if (!stateObj) return;
-      var targetTab = stateObj.tabId || 'tab1';
-      var map = { tab1: 0, tab2: 1, tab3: 2, tab4: 3, tab5: 4, tab6: 5 };
-      var idx = (map[targetTab] !== undefined) ? map[targetTab] : 0;
-      var navBtn = document.querySelectorAll('#mainNav .nav-btn')[idx] || null;
-      showTab(targetTab, navBtn, false, true);
-
-      if (targetTab === 'tab1') {
-        if (stateObj.soloOpen && stateObj.soloItem && Array.isArray(stateObj.soloItem)) {
-          var matched = null;
-          for (var i = 0; i < hanjaDB.length; i++) {
-            if (hanjaDB[i][0] === stateObj.soloItem[0] && hanjaDB[i][2] === stateObj.soloItem[2]) {
-              matched = hanjaDB[i];
-              break;
-            }
-          }
-          openHanjaSolo(matched || stateObj.soloItem, true);
-        } else {
-          closeHanjaSolo(true);
-        }
-      } else if (targetTab === 'tab3') {
-        if (stateObj.idiomSoloOpen && stateObj.idiomSoloItem) {
-          var matchedIdiom = null;
-          for (var j = 0; j < idiom1000DB.length; j++) {
-            if (sameIdiomItem(idiom1000DB[j], stateObj.idiomSoloItem)) {
-              matchedIdiom = idiom1000DB[j];
-              break;
-            }
-          }
-          openIdiomSolo(matchedIdiom || stateObj.idiomSoloItem, true, false);
-        } else {
-          closeIdiomSolo(true);
-        }
-      }
-      currentNavState = captureCurrentNavState();
-    }
-
-    window.addEventListener('popstate', function(event) {
-      isHandlingPopState = true;
-      try {
-        if (event.state && event.state.__hanjaApp) {
-          applyNavState(event.state);
-        } else {
-          applyNavState({ tabId: 'tab1', soloOpen: false, soloItem: null, idiomSoloOpen: false, idiomSoloItem: null });
-        }
-      } finally {
-        setTimeout(function() { isHandlingPopState = false; }, 0);
-      }
-    });
-
-    window.addEventListener('keydown', function(event) {
-      if (event.altKey && event.key === 'ArrowLeft') {
-        var activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
-        if (activeTag !== 'input' && activeTag !== 'textarea' && activeTag !== 'select') {
-          event.preventDefault();
-          window.history.back();
-        }
-      }
-    });
-
-    var voiceProfile = 'woman';
-    var previousTabId = 'tab1';
-    var toastTimer = null;
-
-    var gradesMeta = [
-      { code: "8급",   readCum: 50,   add: 50,  writeCum: "없음",              note: "민간자격" },
-      { code: "7급Ⅱ",  readCum: 100,  add: 50,  writeCum: "없음",              note: "민간자격" },
-      { code: "7급",   readCum: 150,  add: 50,  writeCum: "없음",              note: "민간자격" },
-      { code: "6급Ⅱ",  readCum: 225,  add: 75,  writeCum: "50자 (8급 읽기)",    note: "민간자격 (쓰기 시작)" },
-      { code: "6급",   readCum: 300,  add: 75,  writeCum: "150자 (7급 읽기)",   note: "민간자격" },
-      { code: "5급Ⅱ",  readCum: 400,  add: 100, writeCum: "225자 (6급Ⅱ 읽기)", note: "민간자격" },
-      { code: "5급",   readCum: 500,  add: 100, writeCum: "300자 (6급 읽기)",   note: "민간자격" },
-      { code: "4급Ⅱ",  readCum: 750,  add: 250, writeCum: "400자 (5급Ⅱ 읽기)", note: "민간자격" },
-      { code: "4급",   readCum: 1000, add: 250, writeCum: "500자 (5급 읽기)",   note: "민간자격" },
-      { code: "3급Ⅱ",  readCum: 1500, add: 500,  writeCum: "750자 (4급Ⅱ 읽기)", note: "국가공인 시작" },
-      { code: "3급",   readCum: 1817, add: 317,  writeCum: "1,000자 (4급 읽기)", note: "국가공인" },
-      { code: "2급",   readCum: 2355, add: 538,  writeCum: "누적 2,355자 기준", note: "2급 배정" },
-      { code: "1급",   readCum: 3500, add: 1145, writeCum: "누적 3,500자 기준", note: "1급 배정" },
-      { code: "준특급", readCum: 4650, add: 1150, writeCum: "누적 4,650자 기준", note: "특급Ⅱ" },
-      { code: "특급",  readCum: 5978, add: 1328, writeCum: "누적 5,978자 기준", note: "특급" }
-    ];
-
-    // [한자, 훈음, 급수, 획수, 활용어]
-    var baseHanjaDB = [
-      ["山", "뫼 산", "8급", 3, "산악, 등산"],
-      ["水", "물 수", "8급", 4, "수영, 산수"],
-      ["火", "불 화", "8급", 4, "화재, 화요일"],
-      ["木", "나무 목", "8급", 4, "목요일, 초목"],
-      ["金", "쇠 금", "8급", 8, "금메달, 금요일"],
-      ["土", "흙 토", "8급", 3, "토요일, 국토"],
-      ["日", "날 일", "8급", 4, "일요일, 생일"],
-      ["月", "달 월", "8급", 4, "월요일, 세월"],
-      ["人", "사람 인", "8급", 2, "인간, 노인"],
-      ["大", "큰 대", "8급", 3, "대학, 대문"],
-      ["小", "작을 소", "8급", 3, "초소, 소수"],
-      ["中", "가운데 중", "8급", 4, "중심, 한국"],
-      ["下", "아래 하", "8급", 3, "하산, 상하"],
-      ["上", "위 상", "8급", 3, "상승, 상하"],
-      ["一", "한 일", "8급", 1, "일등, 단일"],
-      ["二", "두 이", "8급", 2, "이인, 이등"],
-      ["三", "석 삼", "8급", 3, "삼각형, 삼일"],
-      ["四", "넉 사", "8급", 5, "사계절, 사방"],
-      ["五", "다섯 오", "8급", 4, "오월, 오감"],
-      ["六", "여섯 륙", "8급", 4, "육월, 육면체"],
-      ["七", "일곱 칠", "8급", 2, "칠월, 칠전팔기"],
-      ["八", "여덟 팔", "8급", 2, "팔월, 팔방"],
-      ["九", "아홉 구", "8급", 2, "구월, 구사일생"],
-      ["十", "열 십", "8급", 2, "십월, 십자가"],
-      ["百", "일백 백", "8급", 6, "백점, 백과사전"],
-      ["千", "일천 천", "8급", 3, "천리, 천만"],
-      ["萬", "일만 만", "8급", 12, "만물, 백만"],
-      ["王", "임금 왕", "8급", 4, "왕국, 여왕"],
-      ["女", "여자 녀", "8급", 3, "여학생, 소녀"],
-      ["男", "사내 남", "8급", 7, "남학생, 남녀"],
-
-      ["父", "아비 부", "7급Ⅱ", 4, "부모, 부자"],
-      ["母", "어미 모", "7급Ⅱ", 5, "모교, 모국어"],
-      ["子", "아들 자", "7급Ⅱ", 3, "자녀, 효자"],
-      ["校", "학교 교", "7급Ⅱ", 10, "학교, 교장"],
-      ["生", "날 생", "7급Ⅱ", 5, "학생, 생활"],
-      ["學", "배울 학", "7급Ⅱ", 16, "학습, 과학"],
-      ["花", "꽃 화", "7급Ⅱ", 7, "화단, 개화"],
-      ["草", "풀 초", "7급Ⅱ", 9, "초원, 잡초"],
-      ["石", "돌 석", "7급Ⅱ", 5, "석유, 화석"],
-      ["田", "밭 전", "7급Ⅱ", 5, "전답, 유전"],
-
-      ["國", "나라 국", "7급", 11, "국가, 애국"],
-      ["民", "백성 민", "7급", 5, "국민, 시민"],
-      ["家", "집 가", "7급", 10, "가족, 화가"],
-      ["門", "문 문", "7급", 8, "정문, 문학"],
-      ["洞", "마을 동", "7급", 9, "동네, 동사무소"],
-      ["村", "마을 촌", "7급", 7, "농촌, 어촌"],
-      ["里", "마을 리", "7급", 7, "고향, 천리"],
-      ["天", "하늘 천", "7급", 4, "천재, 천국"],
-      ["地", "땅 지", "7급", 6, "지구, 지하"],
-      ["空", "빌 공", "7급", 8, "공기, 항공"],
-
-      ["力", "힘 력", "6급Ⅱ", 2, "노력, 전력"],
-      ["氣", "기운 기", "6급Ⅱ", 10, "기분, 인기"],
-      ["心", "마음 심", "6급Ⅱ", 4, "안심, 열심"],
-      ["手", "손 수", "6급Ⅱ", 4, "선수, 악수"],
-      ["足", "발 족", "6급Ⅱ", 7, "축구, 만족"],
-      ["目", "눈 목", "6급Ⅱ", 5, "목적, 주목"],
-      ["耳", "귀 이", "6급Ⅱ", 6, "이목, 이비인후과"],
-      ["口", "입 구", "6급Ⅱ", 3, "인구, 출구"],
-
-      ["道", "길 도", "6급", 12, "도로, 도덕"],
-      ["路", "길 로", "6급", 13, "통로, 차로"],
-      ["車", "수레 거", "6급", 7, "자동차, 기차"],
-      ["行", "다닐 행", "6급", 6, "여행, 실행"],
-      ["來", "올 래", "6급", 7, "내일, 미래"],
-      ["去", "갈 거", "6급", 5, "과거, 제거"],
-
-      ["光", "빛 광", "5급", 6, "햇빛, 광명"],
-      ["明", "밝을 명", "5급", 8, "발명, 설명"],
-      ["正", "바를 정", "5급", 5, "정답, 정의"],
-      ["信", "믿을 신", "4급", 9, "신용, 자신"],
-      ["義", "옳을 의", "4급", 13, "정의, 의리"],
-      ["禮", "예의 례", "4급", 18, "예절, 예의"],
-      ["智", "지혜 지", "3급", 12, "지혜, 이지"],
-      ["德", "큰덕 덕", "3급", 15, "도덕, 덕망"],
-
-      ["耀", "빛날 요", "2급", 20, "영요, 조요"],
-      ["譜", "계보 보", "2급", 19, "족보, 악보"],
-      ["巖", "바위 암", "1급", 23, "기암괴석, 암벽"],
-      ["璽", "도장 새", "1급", 19, "국새, 어새"],
-      ["鸞", "난새 란", "준특급", 27, "난봉, 난새"],
-      ["黽", "맹꽁이 맹", "준특급", 20, "면면, 맹맹"],
-      ["麤", "거칠 추", "특급", 33, "추잡, 추악"],
-      ["齉", "코맹맹이소리 농", "특급", 34, "농성, 농음"]
-    ];
-
-    var baseIdiomDB = [
-      { word: "溫故知新", read: "온고지신", mean: "옛것을 익히고 그것을 미루어 새것을 앎.", grade: "필수·1급" },
-      { word: "漁父之利", read: "어부지리", mean: "두 사람이 다투는 틈을 타서 제삼자가 이득을 봄.", grade: "필수·1급" },
-      { word: "刻舟求劍", read: "각주구검", mean: "융통성 없이 어리석게 현실에 맞지 않는 방법을 고집함.", grade: "필수·1급" },
-      { word: "矛盾", read: "모순", mean: "앞뒤가 맞지 아니하고 서로 어긋나는 일.", grade: "필수·1급" },
-      { word: "自業自得", read: "자업자득", mean: "자기가 저지른 일의 과보를 자기가 받음.", grade: "필수·1급" },
-      { word: "一石二鳥", read: "일석이조", mean: "한 가지 일로 두 가지 이익을 얻음.", grade: "필수·1급" },
-      { word: "百折不屈", read: "백절불굴", mean: "백 번 꺾여도 굽히지 아니함.", grade: "필수·1급" },
-      { word: "苦盡甘來", read: "고진감래", mean: "쓴 것이 다하면 단 것이 온다는 뜻으로, 고생 끝에 낙이 옴.", grade: "필수·1급" },
-      { word: "同甘共苦", read: "동감공고", mean: "기쁨과 괴로움을 함께함.", grade: "필수·1급" },
-      { word: "朝三暮四", read: "조삼모사", mean: "눈앞의 차이만 알고 전체를 보지 못해 꾀에 넘어감.", grade: "필수·1급" },
-      { word: "畫龍點睛", read: "화룡점정", mean: "용을 그린 뒤 마지막으로 눈동자를 찍어 완성함.", grade: "필수·1급" },
-      { word: "結草報恩", read: "결초보은", mean: "죽어서도 잊지 않고 은혜를 갚음.", grade: "필수·1급" },
-      { word: "改過遷善", read: "개과천선", mean: "잘못을 고치고 착하게 나아감.", grade: "필수·1급" },
-      { word: "勸善懲惡", read: "권선징악", mean: "착한 일을 권장하고 악한 일을 징벌함.", grade: "필수·1급" },
-      { word: "多事多難", read: "다사다난", mean: "일도 많고 탈도 많음.", grade: "필수·1급" },
-      { word: "無爲自然", read: "무위자연", mean: "인위적인 힘을 더하지 않고 자연 그대로 있음.", grade: "필수·1급" },
-      { word: "枕戈待旦", read: "침과대단", mean: "창을 베개 삼아 자면서 새벽을 기다린다는 뜻으로, 싸울 결의를 다짐.", grade: "1급심화" },
-      { word: "焚書坑儒", read: "분서갱유", mean: "책을 불사르고 선비들을 생매장한 탄압 사건.", grade: "1급심화" },
-      { word: "拔本塞源", read: "발본색원", mean: "근본을 뽑고 근원을 막아 폐단을 완전히 없앰.", grade: "1급심화" },
-      { word: "履薄臨深", read: "리박림심", mean: "얇은 얼음을 밟고 깊은 못에 임하듯 항상 조심함.", grade: "1급심화" },
-      { word: "切磋琢磨", read: "절차탁마", mean: "옥을 다듬듯 학문과 덕행을 갈고닦음.", grade: "1급심화" },
-      { word: "桑田碧海", read: "상전벽해", mean: "뽕나무 밭이 푸른 바다가 된다는 뜻으로, 세상 변화가 심함.", grade: "1급심화" },
-      { word: "風樹之歎", read: "풍수지탄", mean: "부모가 돌아가신 뒤에 효도하려 해도 할 수 없는 슬픔.", grade: "1급심화" },
-      { word: "管鮑之交", read: "관포지교", mean: "관중과 포숙아의 우정처럼 허물없고 깊은 사귐.", grade: "1급심화" }
-    ];
-
-    var hanjaDB = baseHanjaDB.slice();
-    var idiom1000DB = baseIdiomDB.slice();
-    var progress = loadProgress();
-
-    function showToast(msg) {
-      var el = document.getElementById('toastMsg');
-      if (!el) return;
-      el.innerHTML = msg;
-      el.style.display = 'block';
-      if (toastTimer) clearTimeout(toastTimer);
-      toastTimer = setTimeout(function() { el.style.display = 'none'; }, 1800);
-    }
-
-    function loadProgress() {
-      try {
-        var raw = window.localStorage.getItem('hanjaAppCustomV2');
-        if (raw) {
-          var parsed = JSON.parse(raw);
-          return {
-            stars: parsed.stars || 0,
-            written: parsed.written || 0,
-            quiz: parsed.quiz || 0,
-            stickers: Array.isArray(parsed.stickers) ? parsed.stickers : [],
-            learnedChars: Array.isArray(parsed.learnedChars) ? parsed.learnedChars : [],
-            tracedChars: Array.isArray(parsed.tracedChars) ? parsed.tracedChars : [],
-            memorizedChars: Array.isArray(parsed.memorizedChars) ? parsed.memorizedChars : [],
-            memorizedIdioms: Array.isArray(parsed.memorizedIdioms) ? parsed.memorizedIdioms : []
-          };
-        }
-      } catch (e) {}
-      return { stars: 0, written: 0, quiz: 0, stickers: [], learnedChars: [], tracedChars: [], memorizedChars: [], memorizedIdioms: [] };
-    }
-
-    function saveProgress() {
-      try { window.localStorage.setItem('hanjaAppCustomV2', JSON.stringify(progress)); } catch (e) {}
-    }
-
-    function makeCharKey(item) {
-      if (!item) return '';
-      return (item[0] || '') + '|' + (item[2] || '');
-    }
-
-    function makeIdiomKey(item) {
-      if (!item) return '';
-      return (item.word || '') + '|' + (item.read || '');
-    }
-
-    function isIdiomMemorized(item) {
-      if (!item) return false;
-      var key = makeIdiomKey(item);
-      var memo = Array.isArray(progress.memorizedIdioms) ? progress.memorizedIdioms : [];
-      return memo.some(function(entry) {
-        return entry === key || (item.word && entry === item.word);
-      });
-    }
-
-    function updateSoloIdiomMemoButtonUI(item) {
-      var btn = document.getElementById('soloIdiomMemoBtn');
-      if (!btn || !item) return;
-      var checked = isIdiomMemorized(item);
-      if (checked) {
-        btn.classList.add('memorized');
-        btn.innerHTML = '✅ 암기 완료';
-      } else {
-        btn.classList.remove('memorized');
-        btn.innerHTML = '암기 체크';
-      }
-    }
-
-    function toggleMemorizedCurrentIdiom() {
-      if (!selectedIdiom) return;
-      if (!Array.isArray(progress.memorizedIdioms)) progress.memorizedIdioms = [];
-      var key = makeIdiomKey(selectedIdiom);
-      var filtered = progress.memorizedIdioms.filter(function(entry) {
-        return entry !== key && entry !== selectedIdiom.word;
-      });
-
-      if (filtered.length < progress.memorizedIdioms.length) {
-        progress.memorizedIdioms = filtered;
-        saveProgress();
-        updateSoloIdiomMemoButtonUI(selectedIdiom);
-        updateStatsUI();
-        renderIdioms();
-        showToast((selectedIdiom.read || selectedIdiom.word) + ' 암기 체크를 해제했어요.');
-      } else {
-        progress.memorizedIdioms.push(key);
-        saveProgress();
-        updateSoloIdiomMemoButtonUI(selectedIdiom);
-        updateStatsUI();
-        renderIdioms();
-        playChime(true);
-        showToast((selectedIdiom.word || '') + ' (' + (selectedIdiom.read || '') + ') 암기 체크 완료!');
-      }
     }
 
     function isCharMemorized(item) {
@@ -2155,7 +1418,80 @@
 
     var currentQuizGrade = 'all';
     var currentQuizAnswer = null;
+    var lastQuizCharKey = '';
+    var quizDeck = [];
+    var quizDeckSignature = '';
     var quizLocked = false;
+
+    function getPoolSignature(grade, pool) {
+      var keys = [];
+      for (var i = 0; i < pool.length; i++) {
+        keys.push(makeCharKey(pool[i]));
+      }
+      keys.sort();
+      return (grade || 'all') + '::' + keys.join('||');
+    }
+
+    function shuffleItems(list) {
+      var arr = list.slice();
+      for (var i = arr.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+      }
+      return arr;
+    }
+
+    function pickNonRepeatingFromPool(pool, excludeKey) {
+      if (!Array.isArray(pool) || pool.length === 0) return null;
+      var sig = getPoolSignature(currentQuizGrade, pool);
+      if (sig !== quizDeckSignature) {
+        quizDeckSignature = sig;
+        quizDeck = shuffleItems(pool);
+        if (quizDeck.length > 1 && makeCharKey(quizDeck[quizDeck.length - 1]) === excludeKey) {
+          var swapIdx = Math.floor(Math.random() * (quizDeck.length - 1));
+          var tmpFirst = quizDeck[quizDeck.length - 1];
+          quizDeck[quizDeck.length - 1] = quizDeck[swapIdx];
+          quizDeck[swapIdx] = tmpFirst;
+        }
+      }
+
+      if (quizDeck.length === 0) {
+        quizDeck = shuffleItems(pool);
+      }
+
+      var candidate = quizDeck.pop();
+      var candidateKey = makeCharKey(candidate);
+
+      if (candidateKey === excludeKey && pool.length > 1) {
+        if (quizDeck.length > 0) {
+          var nextIdx = -1;
+          for (var k = quizDeck.length - 1; k >= 0; k--) {
+            if (makeCharKey(quizDeck[k]) !== excludeKey) {
+              nextIdx = k;
+              break;
+            }
+          }
+          if (nextIdx >= 0) {
+            var alt = quizDeck.splice(nextIdx, 1)[0];
+            quizDeck.unshift(candidate);
+            candidate = alt;
+          }
+        } else {
+          var fresh = shuffleItems(pool);
+          for (var f = 0; f < fresh.length; f++) {
+            if (makeCharKey(fresh[f]) !== excludeKey) {
+              candidate = fresh[f];
+              quizDeck = fresh.filter(function(item) { return item !== candidate; });
+              break;
+            }
+          }
+        }
+      }
+
+      return candidate;
+    }
 
     function matchesCharEntry(item, entry) {
       if (!item || !item[0] || !entry) return false;
@@ -2212,6 +1548,8 @@
 
     function filterQuizGrade(grade, btn) {
       currentQuizGrade = grade || 'all';
+      quizDeck = [];
+      quizDeckSignature = '';
       var btns = document.querySelectorAll('#quizGradeTabs .cat-btn');
       for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
       if (btn) btn.classList.add('active');
@@ -2261,6 +1599,8 @@
 
       if (pool.length === 0) {
         currentQuizAnswer = null;
+        quizDeck = [];
+        quizDeckSignature = '';
         var label = currentQuizGrade === 'all' ? '아직' : (currentQuizGrade + '에서 아직');
         document.getElementById('quizGradeBadge').innerHTML = label + ' 암기 체크한 글자가 없어요';
         document.getElementById('quizHanjaChar').innerHTML = '?';
@@ -2277,9 +1617,12 @@
       if (hintBtn) hintBtn.style.display = 'inline-block';
       if (learnBtn) learnBtn.style.display = 'none';
 
-      var correct = pool[Math.floor(Math.random() * pool.length)];
+      var correct = pickNonRepeatingFromPool(pool, lastQuizCharKey) || pool[0];
       currentQuizAnswer = correct;
-      document.getElementById('quizGradeBadge').innerHTML = (correct[2] || '') + ' 배정한자 (암기 체크한 글자)';
+      lastQuizCharKey = makeCharKey(correct);
+      var remainingInCycle = quizDeck.length;
+      document.getElementById('quizGradeBadge').innerHTML =
+        (correct[2] || '') + ' 배정한자 · 이번 바퀴 남은 문제: ' + remainingInCycle + '개 (총 ' + pool.length + '자)';
       document.getElementById('quizHanjaChar').innerHTML = correct[0];
 
       var validMeanings = [];
@@ -2402,6 +1745,9 @@
         memorizedChars: [],
         memorizedIdioms: []
       };
+      lastQuizCharKey = '';
+      quizDeck = [];
+      quizDeckSignature = '';
       saveProgress();
       updateStatsUI();
       renderHanjaGrid();
