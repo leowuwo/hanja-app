@@ -1093,18 +1093,21 @@
       }
     }
 
-function normalizeIdiomList(list) {
+function normalizeIdiomList(list, fallbackGrade) {
   if (!Array.isArray(list)) return [];
   return list
-    .filter(function(item) { return item && (item.idiom || item.word); })
+    .filter(function(item) {
+      return item && (item.idiom || item.word || item.hanja);
+    })
     .map(function(item) {
       return {
         word: item.hanja || item.word || '',
         read: item.idiom || item.read || '',
         mean: item.meaning || item.mean || '',
-        grade: item.grade || '필수·1급'
+        grade: item.grade || fallbackGrade || '필수·1급'
       };
     });
+}
 }
     
 window.addEventListener('DOMContentLoaded', function() {
@@ -1114,13 +1117,19 @@ window.addEventListener('DOMContentLoaded', function() {
       return res.json();
     });
 
-  var idiomReq = fetch('./sajaseongeo_1000.json?v=' + Date.now(), { cache: 'no-store' })
+  var idiomMainReq = fetch('./sajaseongeo_1000_3.json?v=' + Date.now(), { cache: 'no-store' })
     .then(function(res) {
-      if (!res.ok) throw new Error('사자성어 JSON HTTP ' + res.status);
+      if (!res.ok) throw new Error('사자성어 1000 JSON HTTP ' + res.status);
       return res.json();
     });
 
-  Promise.allSettled([hanjaReq, idiomReq])
+  var idiomAdvReq = fetch('./sajaseongeo_1급심화.json?v=' + Date.now(), { cache: 'no-store' })
+    .then(function(res) {
+      if (!res.ok) throw new Error('1급심화 JSON HTTP ' + res.status);
+      return res.json();
+    });
+
+  Promise.allSettled([hanjaReq, idiomMainReq, idiomAdvReq])
     .then(function(results) {
       if (results[0].status === 'fulfilled' && Array.isArray(results[0].value) && results[0].value.length > 0) {
         hanjaDB = results[0].value;
@@ -1128,13 +1137,24 @@ window.addEventListener('DOMContentLoaded', function() {
         console.warn('한자 JSON 로드 실패:', results[0].reason);
       }
 
+      var mergedIdioms = [];
+
       if (results[1].status === 'fulfilled' && Array.isArray(results[1].value) && results[1].value.length > 0) {
-        var normalizedIdioms = normalizeIdiomList(results[1].value);
-        if (normalizedIdioms.length > 0) {
-          idiom1000DB = normalizedIdioms;
-        }
+        mergedIdioms = mergedIdioms.concat(normalizeIdiomList(results[1].value, '필수·1급'));
       } else {
-        console.warn('사자성어 JSON 로드 실패:', results[1].reason);
+        console.warn('사자성어 1000 JSON 로드 실패:', results[1].reason);
+        mergedIdioms = mergedIdioms.concat(baseIdiomDB.filter(function(it) { return it.grade !== '1급심화'; }));
+      }
+
+      if (results[2].status === 'fulfilled' && Array.isArray(results[2].value) && results[2].value.length > 0) {
+        mergedIdioms = mergedIdioms.concat(normalizeIdiomList(results[2].value, '1급심화'));
+      } else {
+        console.warn('1급심화 JSON 로드 실패:', results[2].reason);
+        mergedIdioms = mergedIdioms.concat(baseIdiomDB.filter(function(it) { return it.grade === '1급심화'; }));
+      }
+
+      if (mergedIdioms.length > 0) {
+        idiom1000DB = mergedIdioms;
       }
     })
     .finally(function() {
