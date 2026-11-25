@@ -1093,6 +1093,20 @@
       }
     }
 
+function normalizeIdiomList(list) {
+  if (!Array.isArray(list)) return [];
+  return list
+    .filter(function(item) { return item && (item.idiom || item.word); })
+    .map(function(item) {
+      return {
+        word: item.hanja || item.word || '',
+        read: item.idiom || item.read || '',
+        mean: item.meaning || item.mean || '',
+        grade: item.grade || '필수·1급'
+      };
+    });
+}
+    
 window.addEventListener('DOMContentLoaded', function() {
   var hanjaReq = fetch('./hanja_8_to_3.json?v=' + Date.now(), { cache: 'no-store' })
     .then(function(res) {
@@ -1100,7 +1114,7 @@ window.addEventListener('DOMContentLoaded', function() {
       return res.json();
     });
 
-  var idiomReq = fetch('./sajaseongeo_1000_2.json?v=' + Date.now(), { cache: 'no-store' })
+  var idiomReq = fetch('./sajaseongeo_1000.json?v=' + Date.now(), { cache: 'no-store' })
     .then(function(res) {
       if (!res.ok) throw new Error('사자성어 JSON HTTP ' + res.status);
       return res.json();
