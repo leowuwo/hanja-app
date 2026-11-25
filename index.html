@@ -297,6 +297,97 @@
   <div class="toast-msg" id="toastMsg"></div>
 
   <script>
+    var isHandlingPopState = false;
+    var currentNavState = { tabId: 'tab1', soloOpen: false, soloItem: null };
+
+    function captureCurrentNavState() {
+      var activeSec = document.querySelector('.section.active');
+      var tabId = (activeSec && activeSec.id) ? activeSec.id : 'tab1';
+      var soloEl = document.getElementById('hanjaSoloView');
+      var isSolo = (tabId === 'tab1' && soloEl && soloEl.style.display !== 'none' && selectedHanja);
+      return {
+        tabId: tabId,
+        soloOpen: Boolean(isSolo),
+        soloItem: isSolo ? [selectedHanja[0], selectedHanja[1], selectedHanja[2], selectedHanja[3], selectedHanja[4]] : null
+      };
+    }
+
+    function pushAppHistoryState() {
+      if (isHandlingPopState) return;
+      try {
+        if (!window.history || typeof window.history.pushState !== 'function') return;
+        var snap = captureCurrentNavState();
+        var prev = window.history.state;
+        if (
+          prev &&
+          prev.__hanjaApp &&
+          prev.tabId === snap.tabId &&
+          Boolean(prev.soloOpen) === Boolean(snap.soloOpen) &&
+          ((!prev.soloItem && !snap.soloItem) ||
+            (prev.soloItem && snap.soloItem && prev.soloItem[0] === snap.soloItem[0] && prev.soloItem[2] === snap.soloItem[2]))
+        ) {
+          return;
+        }
+        window.history.pushState({
+          __hanjaApp: true,
+          tabId: snap.tabId,
+          soloOpen: snap.soloOpen,
+          soloItem: snap.soloItem
+        }, '', window.location.href);
+        currentNavState = snap;
+      } catch (e) {}
+    }
+
+    function applyNavState(stateObj) {
+      if (!stateObj) return;
+      var targetTab = stateObj.tabId || 'tab1';
+      var map = { tab1: 0, tab2: 1, tab3: 2, tab4: 3, tab5: 4, tab6: 5 };
+      var idx = (map[targetTab] !== undefined) ? map[targetTab] : 0;
+      var navBtn = document.querySelectorAll('#mainNav .nav-btn')[idx] || null;
+      showTab(targetTab, navBtn, false, true);
+
+      if (targetTab === 'tab1') {
+        if (stateObj.soloOpen && stateObj.soloItem && Array.isArray(stateObj.soloItem)) {
+          var matched = null;
+          for (var i = 0; i < hanjaDB.length; i++) {
+            if (hanjaDB[i][0] === stateObj.soloItem[0] && hanjaDB[i][2] === stateObj.soloItem[2]) {
+              matched = hanjaDB[i];
+              break;
+            }
+          }
+          openHanjaSolo(matched || stateObj.soloItem, true);
+        } else {
+          closeHanjaSolo(true);
+        }
+      }
+      currentNavState = captureCurrentNavState();
+    }
+
+    window.addEventListener('popstate', function(event) {
+      isHandlingPopState = true;
+      try {
+        if (event.state && event.state.__hanjaApp) {
+          applyNavState(event.state);
+        } else {
+          // If user came back to initial entry state, return to main tab1 list
+          applyNavState({ tabId: 'tab1', soloOpen: false, soloItem: null });
+        }
+      } finally {
+        setTimeout(function() { isHandlingPopState = false; }, 0);
+      }
+    });
+
+    window.addEventListener('keydown', function(event) {
+      // Support Alt+Left on PC browsers as well as standard browser/OS back navigation
+      if (event.altKey && event.key === 'ArrowLeft') {
+        var activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+        if (activeTag !== 'input' && activeTag !== 'textarea' && activeTag !== 'select') {
+          event.preventDefault();
+          window.history.back();
+        }
+      }
+    });
+
     var progress = loadProgress();
     var voiceProfile = 'girl';
     var previousTabId = 'tab1';
@@ -725,11 +816,12 @@
       openHanjaSolo(list[nextIdx]);
     }
 
-    function openHanjaSolo(item) {
+    function openHanjaSolo(item, skipHistoryPush) {
       selectedHanja = item;
       markCharLearned(item);
       document.getElementById('hanjaListView').style.display = 'none';
       document.getElementById('hanjaSoloView').style.display = 'flex';
+      if (!skipHistoryPush) pushAppHistoryState();
       document.getElementById('soloHanjaChar').innerHTML = item[0];
       document.getElementById('soloHanjaHuneum').innerHTML = item[1];
       document.getElementById('soloHanjaDetail').innerHTML =
@@ -741,9 +833,10 @@
       speak(item[1]);
     }
 
-    function closeHanjaSolo() {
+    function closeHanjaSolo(skipHistoryPush) {
       document.getElementById('hanjaSoloView').style.display = 'none';
       document.getElementById('hanjaListView').style.display = 'flex';
+      if (!skipHistoryPush) pushAppHistoryState();
     }
 
     function renderHanjaGrid() {
@@ -1341,7 +1434,7 @@
       showToast('기록이 초기화되었어요.');
     }
 
-    function showTab(tabId, btn, skipPrevTrack) {
+    function showTab(tabId, btn, skipPrevTrack, skipHistoryPush) {
       var activeSec = document.querySelector('.section.active');
       if (!skipPrevTrack && activeSec && activeSec.id && activeSec.id !== 'tab4') {
         previousTabId = activeSec.id;
@@ -1357,6 +1450,7 @@
 
       if (tabId === 'tab4') drawGuideHanja(currentWriteItem);
       if (tabId === 'tab5') nextQuiz();
+      if (!skipHistoryPush) pushAppHistoryState();
     }
 
     function mergeExternalData() {
@@ -1440,6 +1534,17 @@ window.addEventListener('DOMContentLoaded', function() {
       startSequentialWriteFromGrade('8급', null);
       nextQuiz();
       updateStatsUI();
+      try {
+        if (window.history && typeof window.history.replaceState === 'function') {
+          window.history.replaceState({
+            __hanjaApp: true,
+            tabId: 'tab1',
+            soloOpen: false,
+            soloItem: null
+          }, '', window.location.href);
+          currentNavState = captureCurrentNavState();
+        }
+      } catch (e) {}
     });
 });
   </script>
