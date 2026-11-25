@@ -195,11 +195,32 @@
       <div class="canvas-container">
         <div class="write-header-bar">
           <button type="button" class="back-btn" onclick="goBackFromWrite()">← 뒤로</button>
-          <span style="font-size:1.1rem;">연습 한자: </span>
+          <select id="writeGradeSelect" class="voice-select" style="border-color:#6CD4C3; font-size:0.92rem;" onchange="changeWriteGrade(this.value)" aria-label="따라 쓰기 급수 선택">
+            <option value="all">전체 급수</option>
+            <option value="8급" selected>8급</option>
+            <option value="7급Ⅱ">7급Ⅱ</option>
+            <option value="7급">7급</option>
+            <option value="6급Ⅱ">6급Ⅱ</option>
+            <option value="6급">6급</option>
+            <option value="5급Ⅱ">5급Ⅱ</option>
+            <option value="5급">5급</option>
+            <option value="4급Ⅱ">4급Ⅱ</option>
+            <option value="4급">4급</option>
+            <option value="3급Ⅱ">3급Ⅱ</option>
+            <option value="3급">3급</option>
+            <option value="2급">2급</option>
+            <option value="1급">1급</option>
+            <option value="준특급">준특급</option>
+            <option value="특급">특급</option>
+          </select>
+          <span id="writeOrderBadge" style="font-size:0.88rem; background:#E0F7FA; color:#00695C; padding:3px 8px; border-radius:10px;">1 / 1</span>
+          <span style="font-size:1.05rem;">연습 한자: </span>
           <strong id="targetWriteChar" class="hanja-font" style="font-size:2.1rem; color:#FF7A00;">國</strong>
-          <span id="targetWriteInfo" style="font-size:1.05rem; color:#555;"></span>
+          <span id="targetWriteInfo" style="font-size:1.0rem; color:#555;"></span>
+          <button type="button" class="mini-btn" onclick="prevWriteHanja(true)">◀ 이전</button>
+          <button type="button" class="mini-btn" onclick="nextWriteHanja(true, false)">다음 ▶</button>
           <button type="button" class="mini-btn" onclick="speakCurrentWrite()">🔊 듣기</button>
-          <button type="button" class="mini-btn" onclick="pickRandomWriteHanja(true)">🎲 다른 한자</button>
+          <button type="button" class="mini-btn" onclick="pickRandomWriteHanja(true)">🎲 랜덤</button>
         </div>
         <div class="canvas-wrap">
           <canvas id="writeCanvas" width="440" height="440"></canvas>
@@ -754,7 +775,84 @@
     var ctx = canvas.getContext('2d');
     var isDrawing = false;
     var hasDrawnStroke = false;
-    var currentWriteItem = hanjaDB[Math.min(41, hanjaDB.length - 1)] || baseHanjaDB[0];
+    var writeGrade = '8급';
+    var writeSequentialMode = true;
+    var currentWriteItem = hanjaDB[0] || baseHanjaDB[0];
+
+    function getWriteHanjaList() {
+      var list = [];
+      for (var i = 0; i < hanjaDB.length; i++) {
+        var it = hanjaDB[i];
+        if (writeGrade !== 'all' && it[2] !== writeGrade) continue;
+        list.push(it);
+      }
+      if (list.length === 0) return hanjaDB.length > 0 ? hanjaDB : baseHanjaDB;
+      return list;
+    }
+
+    function syncWriteGradeSelectUI() {
+      var sel = document.getElementById('writeGradeSelect');
+      if (sel) sel.value = writeGrade;
+    }
+
+    function updateWriteOrderBadge() {
+      var badge = document.getElementById('writeOrderBadge');
+      if (!badge) return;
+      var list = getWriteHanjaList();
+      var idx = findSoloIndex(list, currentWriteItem);
+      var pos = idx >= 0 ? (idx + 1) : 1;
+      var modeLabel = writeSequentialMode ? '순서' : '랜덤';
+      badge.innerHTML = (writeGrade === 'all' ? '전체' : writeGrade) + ' · ' + pos + '/' + list.length + ' (' + modeLabel + ')';
+    }
+
+    function applyWriteItem(item, shouldSpeak) {
+      if (!item) return;
+      currentWriteItem = item;
+      document.getElementById('targetWriteChar').innerHTML = item[0];
+      document.getElementById('targetWriteInfo').innerHTML = '(' + item[1] + ' · ' + item[2] + ' · ' + item[3] + '획)';
+      updateWriteOrderBadge();
+      clearCanvas();
+      if (shouldSpeak) speak(item[1]);
+    }
+
+    function changeWriteGrade(grade) {
+      writeGrade = grade || 'all';
+      writeSequentialMode = true;
+      var list = getWriteHanjaList();
+      applyWriteItem(list[0], true);
+    }
+
+    function startSequentialWriteFromGrade(grade, item) {
+      writeGrade = grade || (item && item[2]) || 'all';
+      writeSequentialMode = true;
+      syncWriteGradeSelectUI();
+      var list = getWriteHanjaList();
+      var idx = findSoloIndex(list, item);
+      var target = idx >= 0 ? list[idx] : list[0];
+      applyWriteItem(target, false);
+    }
+
+    function prevWriteHanja(shouldSpeak) {
+      writeSequentialMode = true;
+      var list = getWriteHanjaList();
+      if (!list || list.length === 0) return;
+      var idx = findSoloIndex(list, currentWriteItem);
+      var prevIdx = (idx >= 0 ? (idx - 1 + list.length) % list.length : list.length - 1);
+      applyWriteItem(list[prevIdx], shouldSpeak);
+    }
+
+    function nextWriteHanja(shouldSpeak, forceSequential) {
+      if (forceSequential) writeSequentialMode = true;
+      if (!writeSequentialMode) {
+        pickRandomWriteHanja(shouldSpeak);
+        return;
+      }
+      var list = getWriteHanjaList();
+      if (!list || list.length === 0) return;
+      var idx = findSoloIndex(list, currentWriteItem);
+      var nextIdx = (idx >= 0 ? (idx + 1) % list.length : 0);
+      applyWriteItem(list[nextIdx], shouldSpeak);
+    }
 
     function drawGuideHanja(item) {
       if (!item) return;
@@ -789,12 +887,10 @@
     }
 
     function sendToWrite(item) {
-      currentWriteItem = item || hanjaDB[0];
-      document.getElementById('targetWriteChar').innerHTML = currentWriteItem[0];
-      document.getElementById('targetWriteInfo').innerHTML = '(' + currentWriteItem[1] + ' · ' + currentWriteItem[2] + ' · ' + currentWriteItem[3] + '획)';
+      var chosen = item || getWriteHanjaList()[0] || hanjaDB[0];
       var tab4Btn = document.querySelectorAll('#mainNav .nav-btn')[3];
       showTab('tab4', tab4Btn, true);
-      clearCanvas();
+      startSequentialWriteFromGrade(currentGrade !== 'all' ? currentGrade : chosen[2], chosen);
       speak(currentWriteItem[1]);
     }
 
@@ -810,12 +906,10 @@
     }
 
     function pickRandomWriteHanja(shouldSpeak) {
-      var chosen = hanjaDB[Math.floor(Math.random() * hanjaDB.length)] || hanjaDB[0];
-      currentWriteItem = chosen;
-      document.getElementById('targetWriteChar').innerHTML = chosen[0];
-      document.getElementById('targetWriteInfo').innerHTML = '(' + chosen[1] + ' · ' + chosen[2] + ' · ' + chosen[3] + '획)';
-      clearCanvas();
-      if (shouldSpeak) speak(chosen[1]);
+      writeSequentialMode = false;
+      var list = getWriteHanjaList();
+      var chosen = list[Math.floor(Math.random() * list.length)] || hanjaDB[0];
+      applyWriteItem(chosen, shouldSpeak);
     }
 
     function getCanvasPos(e) {
@@ -873,9 +967,9 @@
       saveProgress();
       updateStatsUI();
       playChime(true);
-      showToast('참 잘했어요! ⭐ 별 1개와 ' + reward + ' 스티커 획득!');
-      speak('정말 반듯하게 잘 썼어요! 별 한 개를 받았어요!');
-      pickRandomWriteHanja(false);
+      showToast('참 잘했어요! ⭐ 별 1개와 ' + reward + ' 스티커 획득! 다음 글자로 넘어가요.');
+      speak('정말 반듯하게 잘 썼어요! 다음 글자를 따라 써볼까요?');
+      nextWriteHanja(false, true);
     }
 
     var currentQuizAnswer = null;
@@ -1024,7 +1118,7 @@ window.addEventListener('DOMContentLoaded', function() {
       renderHanjaGrid();
       initStrokeRules();
       renderIdioms();
-      pickRandomWriteHanja(false);
+      startSequentialWriteFromGrade('8급', null);
       nextQuiz();
       updateStatsUI();
     });
